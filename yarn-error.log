@@ -32,13 +32,14 @@ npm manifest:
     "publishConfig": {
       "registry": "https://npm.pkg.github.com/aspiralabs"
     },
-    "version": "0.0.1",
+    "version": "0.0.2",
     "description": "A simple template for a custom React component library",
     "scripts": {
       "build": "rollup -c",
       "test": "jest",
       "storybook": "start-storybook -p 6006",
-      "build-storybook": "build-storybook"
+      "build-storybook": "build-storybook",
+      "publish": "npm publish"
     },
     "author": "YOUR_NAME",
     "sideEffects": false,
@@ -81,8 +82,7 @@ npm manifest:
       "style-loader": "^3.3.1",
       "typescript": "^4.7.4"
     },
-    "main": "dist/cjs/index.js",
-    "module": "dist/esm/index.js",
+    "module": "dist/index.js",
     "files": [
       "dist"
     ],
