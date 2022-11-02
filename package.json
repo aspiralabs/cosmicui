@@ -1,17 +1,19 @@
 {
-  "name": "@YOUR_GITHUB_USERNAME/YOUR_REPOSITORY_NAME",
+  "name": "@aspiralabs/test-ui",
   "publishConfig": {
-    "registry": "https://npm.pkg.github.com/YOUR_REPOSITORY_NAME"
+    "registry": "https://npm.pkg.github.com/aspiralabs"
   },
-  "version": "0.1.0",
+  "version": "0.0.1",
   "description": "A simple template for a custom React component library",
   "scripts": {
-    "rollup": "rollup -c",
+    "build": "rollup -c",
     "test": "jest",
     "storybook": "start-storybook -p 6006",
-    "build-storybook": "build-storybook"
+    "build-storybook": "build-storybook",
+    "publish": "npm publish"
   },
   "author": "YOUR_NAME",
+  "sideEffects": false,
   "license": "ISC",
   "devDependencies": {
     "@babel/core": "^7.16.0",
@@ -19,6 +21,7 @@
     "@babel/preset-react": "^7.16.0",
     "@babel/preset-typescript": "^7.16.0",
     "@mdx-js/react": "^2.1.2",
+    "@rollup/plugin-babel": "^6.0.2",
     "@rollup/plugin-commonjs": "^21.0.1",
     "@rollup/plugin-node-resolve": "^13.0.6",
     "@rollup/plugin-typescript": "^8.3.0",
@@ -41,7 +44,9 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "rollup": "^2.60.0",
+    "rollup-plugin-cleaner": "^1.0.0",
     "rollup-plugin-dts": "^4.0.1",
+    "rollup-plugin-peer-deps-external": "^2.2.4",
     "rollup-plugin-postcss": "^4.0.1",
     "sass": "^1.43.5",
     "sass-loader": "^12.3.0",
@@ -53,5 +58,9 @@
   "files": [
     "dist"
   ],
-  "types": "dist/index.d.ts"
+  "types": "dist/index.d.ts",
+  "peerDependencies": {
+    "react": "^17.0.0",
+    "react-dom": "^17.0.0"
+  }
 }
