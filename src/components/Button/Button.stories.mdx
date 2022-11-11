@@ -1,0 +1,78 @@
+import { Meta, Story, Canvas } from '@storybook/addon-docs/blocks';
+import Button from './Button';
+import { AiFillHome } from 'react-icons/ai';
+
+<Meta title="Components/Button" component={Button} />
+
+# Button
+
+This document outlines everything about the button component.
+
+## **General Usage**
+
+Out of the box, the `Button` component works just like a regular HTML button. It can take all the props and attributes of a regular button.
+
+<Canvas withSource="open">
+    <Button>A Nice Button</Button>
+</Canvas>
+
+## **Colored Variants**
+
+Using the colors in `tailwind.config.js` we can pass the key in the `variant` prop to change the color of the button to align with our color design.
+
+<Canvas withSource="open">
+    <Button variant="primary">Primary</Button>
+    <Button variant="secondary">Secondary</Button>
+    <Button variant="success">Success</Button>
+    <Button variant="error">Error</Button>
+    <Button variant="ghost">Ghost</Button>
+</Canvas>
+
+## **Outlined Buttons**
+
+Add the prop `outlined` to outline the buttons.
+
+<Canvas withSource="open">
+    <Button variant="primary" outlined>
+        Primary
+    </Button>
+</Canvas>
+
+## **Button Icons**
+
+Our button component tries to be as flexible as possible with icons. We allow you to use any icon pack such as FontAwesome, React Icons, Hero Icons etc.
+Because every library has different approaches we cannot support everything, but we have generalized the majority of how icons are exported.
+
+You can pass either a `function` or `JSX` version of your icon depending on your library. In the example below `react-icon` supports **both** functional and JSX rendering (see code).
+
+FontAwesome for example does not support both, and can only be used as JSX like so `icon={<FontAwesome icon={faUser} />}`
+
+<Canvas withSource="open">
+    <Button variant="primary" icon={AiFillHome}>
+        Functional
+    </Button>
+    <Button variant="ghost" icon={<AiFillHome />}>
+        JSX
+    </Button>
+</Canvas>
+
+Icons also support `left` or `right` positioning. By default icons are on the right.
+
+<Canvas withSource="open">
+    <Button variant="ghost" icon={AiFillHome} iconPosition="left">
+        Functional
+    </Button>
+</Canvas>
+
+## **Loading**
+
+Passing `loading` prop will automatically disabled the button and add a spinner.
+
+<Canvas withSource="open">
+    <Button variant="primary" loading>
+        Functional
+    </Button>
+    <Button variant="ghost" loading>
+        Functional
+    </Button>
+</Canvas>

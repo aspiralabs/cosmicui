@@ -1,0 +1,90 @@
+import { Meta, Story, Canvas } from '@storybook/addon-docs/blocks';
+
+<Meta title="General/Introduction" />
+
+# Introduction
+
+This is a proof of concept component library system that can be used for DDSI projects. This library was designed for React 17.0 and above.
+
+## **Goals**
+
+There are several goals this library tries to accomplish. These are explained in detail down below.
+
+-   Easy to use
+-   Lightweight and Responsive
+-   Minimal Maintenance
+-   Minimal Depedencies
+
+## **Installation**
+
+You will need to have a GitLab Access token to download this package. Once you have your token make sure to save it to your global `.npmrc` file.
+You can then install using yarn or npm
+
+```bash
+# If using NPM
+npm i @ddsi/olaf-ui
+```
+
+```bash
+# If using Yarn
+yarn add @ddsi/olaf-ui
+```
+
+## **How we are achieving these goals**
+
+### **Easy To Use**
+
+Many components are _based_ off semantic HTML version. This means that our `Button` component uses the HTML
+`<button>` element, and our `Input` component uses the `<input>` under the hood. Various component libraries just
+use generic `<div>` elements to make their components, and thus miss out various functionalities HTML has to offer,
+and will offer in the future. This library aims to use "vanilla/semantic" html where ever possible.
+
+### **Lightweight and Responsive**
+
+We utilize **TailwindCSS** for styling our components, and we highly recommend utilizing TailwindCSS in your projects but it is not necessary.
+TailwindCSS is a utility css framework where each class maps to one css value. For example `flex` maps to `display: flex;` and `mt-4` maps to `margin-top: 1rem;`.
+The benefit to this is this library through tree shaking **only ships with what it uses**, and because multiple components may use flex or margins, there is
+minimal css as one class is used in many places.
+
+**Tailwind Example (88 character counter)**
+
+```
+// element example
+<button class="flex p-4">
+<input class="p-4">
+
+// output css
+.flex { display: flex}
+.p-4 {padding: 1rem}
+```
+
+**BEM Example (163 character count)**
+
+```
+// element example
+<button class="header_btn_main">
+<input class="form_input_text">
+
+// output css
+.header_btn_main {
+    display: flex;
+    padding: 1rem;
+}
+
+.form_input_text {
+    padding: 1rem;
+}
+```
+
+### **Minimal Maintenance**
+
+Because our components use the base html element under the hood we reduce the amount of updates we have to do as HTML standards change.
+HTML Html & Javascript features will automatically be available as they release. This means this library and DDSI projects can take immediate
+use of new html standards and features without having to update the component package.
+
+### **Minimal Depedencies**
+
+While there are quite a few development depedencies, there are no shipped depedencies with this library.
+There is only one required peer dependency (React) and one optional peer dependency (TailwindCSS)
+
+We try to do everything with base html elements, css animations, and only the javascript utilized by React.
