@@ -1,4 +1,5 @@
 import '../src/styles/global.css';
+import CosmicProvider from '../src/components/CosmicProvider';
 
 export const parameters = {
     actions: { argTypesRegex: '^on[A-Z].*' },
@@ -12,3 +13,11 @@ export const parameters = {
         }
     }
 };
+
+export const decorators = [
+    Story => (
+        <CosmicProvider>
+            <Story />
+        </CosmicProvider>
+    )
+];

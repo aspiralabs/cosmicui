@@ -73,11 +73,13 @@
     },
     "dependencies": {
         "@heroicons/react": "^2.0.13",
+        "dayjs": "^1.11.6",
         "framer-motion": "^7.6.5",
         "joi": "^17.7.0",
         "react-icons": "^4.6.0",
         "react-textarea-autosize": "^8.3.4",
         "tailwind-override": "^0.6.1",
+        "uid": "^2.0.1",
         "yup": "^0.32.11"
     }
 }

@@ -1,0 +1,122 @@
+import { Meta, Story, Canvas } from '@storybook/addon-docs/blocks';
+import Button from '../Button';
+import { AiFillHome } from 'react-icons/ai';
+import { useState } from 'react';
+import CosmicProvider, { useCosmic } from '../CosmicProvider';
+
+export const ConfirmationDialog = ({ id }) => {
+    const { Modal } = useCosmic();
+    const handleClose = () => Modal.hide(id);
+    return (
+        <div style={{ width: 350, zIndex: 10000000 }} className="bg-white rounded p-8 pointer-events-auto">
+            <h1 className="text-heading text-xl font-bold text-center">Warning!</h1>
+            <p className="text-center text-body mt-2">Are you sure you want to do this action?</p>
+            <div className="flex items-center gap-4 justify-center mt-6">
+                <button onClick={handleClose}>Cancel</button>
+                <Button variant="primary" onClick={handleClose}>
+                    Submit
+                </Button>
+            </div>
+        </div>
+    );
+};
+
+export const ExampleOne = () => {
+    const { Modal } = useCosmic();
+    return (
+        <div>
+            <Button onClick={() => Modal.show(ConfirmationDialog)}>Modal Confimration Example</Button>
+        </div>
+    );
+};
+
+<Meta title="Components/Modal" />
+
+# Modal
+
+A modal is a type of window that appears in front of content to provide information or ask for a decision. Dialogs will disabled page functionality when they appear.
+
+## **Basic Modal**
+
+While most libraries have us compose models, typically inline with where it appears, Cosmic takes a functional approach to Models.
+We find models to usually require some type of input, fetch something, perform some type of update, and then close.
+
+This can be rather daunting and code and quickly get messy when you have to code up all these states and changes. This is why we designed Cosmic to take a functional approach instead, meaning we call a `Modal` function, tell it what Modal to render, and then pass additional callbacks if needed.
+
+A typical component library Modal transaction might look like this:
+
+```javascript
+const Page = () => {
+    const [modalIsOpen, setModalIsOpen] = useState(false);
+
+    const someFunction = () => {
+        fetch('/some/api').then(() => {
+            setModalIsOpen(false)
+        })
+    }
+
+    return (
+        <div>
+            <p>... content  ..</p>
+            <button onClick={() => setModalIsOpen(!modalIsOpen)}>Open Modal</button>
+
+            <SomeModalComponent open={modalIsOpen} onClose={()=> setModalIsOpen(false)}>
+                <h1>Modal Title</h1>
+                <p>Some Modal Content</p>
+                <button onClick={() => setModalIsOpen(false)}>Cancel</buttton>
+                <button onClick={someFunction}>Submit</button>
+            </SomeModalComponent>
+        </div>
+    );
+};
+```
+
+With Cosmic it is simpler and less **_state management code_** . This allows for cleaner files where the Modal is being triggered.
+
+```javascript
+const Page = () => {
+    const { Modal } = useCosmic();
+
+    return (
+        <div>
+            <p>... content ..</p>
+            <button onClick={() => Modal.show(ModalContent);}>Open Modal</button>
+        </div>
+    );
+};
+```
+
+Where `ModalContent` is another react component that handles any additional logic needed. This allows any logic with the **content** of the modal to be in one file, easily managed, and re-used.
+
+```javascript
+const ModalContent = ({ id }) => {
+    const { Modal } = useCosmic()
+
+    const someFunction = () => {
+        fetch('/some/api').then(() => {
+            Modal.hide(id)(false)
+        })
+    }
+
+    return
+    (
+        <div>
+            <h1>Modal Title</h1>
+            <p>Some Modal Content</p>
+            <button onClick={() => Modal.hide(id)}>Cancel</buttton>
+            <button onClick={someFunction}>Submit</button>
+        </div>
+    )
+}
+
+```
+
+> **NOTE:** the `id` prop is automatically added to any Modal Content File to identify the Modal. One does not have to generate it themselves.
+
+## **Examples**
+
+<Canvas>
+    <CosmicProvider>
+        <ExampleOne />
+    </CosmicProvider>
+</Canvas>
