@@ -20,27 +20,6 @@ export interface TextAreaProps extends InputHTMLAttributes<HTMLTextAreaElement> 
 }
 
 // =============================================================================
-// CLASSES
-// =============================================================================
-const baseTextAreaClass = `
-    bg-surface
-    px-4 
-    py-2
-    rounded-theme-input
-    text-sm
-    placeholder:text-body
-    placeholder:text-opacity-50
-    text-body
-    outline-primary
-    disabled:cursor-not-allowed
-    disabled:hover:bg-surface
-    disabled:bg-opacity-75
-    disabled:hover:bg-opacity-75
-    motion-reduce:transition-none
-    min-h-12
-`;
-
-// =============================================================================
 // COMPONENT
 // =============================================================================
 const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>((props, passedRef) => {
@@ -84,7 +63,7 @@ const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>((props, passedRe
                 {...passThrough}
                 ref={assignRefs(textareaRef, passedRef)}
                 onChange={textAreaChange}
-                className={overrideTailwindClasses(`${baseTextAreaClass} ${props.className}`)}
+                className={overrideTailwindClasses(`textarea ${props.className}`)}
                 value={value}
             />
 

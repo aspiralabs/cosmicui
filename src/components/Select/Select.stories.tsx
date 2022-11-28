@@ -3,7 +3,7 @@ import React from 'react';
 import Select from './Select';
 
 export default {
-    title: 'Select',
+    title: 'Select'
 };
 
 export const BasicSelect = () => {
@@ -15,9 +15,14 @@ export const BasicSelect = () => {
                 options={[
                     { label: 'Bob', value: 'bob' },
                     { label: 'Jimmy', value: 'jimmy' },
-                    { label: 'Kim', value: 'kim' },
+                    { label: 'Kim', value: 'kim' }
                 ]}
             />
+
+            <select className="select">
+                <option>Hello</option>
+                <option>Hello</option>
+            </select>
         </div>
     );
 };

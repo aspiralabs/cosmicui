@@ -31,25 +31,22 @@ export interface SelectOptionEntry {
     render?: JSX.Element;
 }
 
+const ChevronDown = () => {
+    return (
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 stroke-2">
+            <path
+                fillRule="evenodd"
+                d="M12.53 16.28a.75.75 0 01-1.06 0l-7.5-7.5a.75.75 0 011.06-1.06L12 14.69l6.97-6.97a.75.75 0 111.06 1.06l-7.5 7.5z"
+                clipRule="evenodd"
+            />
+        </svg>
+    );
+};
+
 // =============================================================================
 // CLASSES
 // =============================================================================
-const baseClass = `
-    bg-surface 
-    hover:bg-surface-hover
-    focus:bg-surface-hover
-    pl-4 
-    h-10 
-    rounded-theme-input
-    text-sm
-    placeholder:text-body
-    placeholder:text-opacity-50
-    text-body
-    outline-primary
-    relative
-    flex
-    items-center
-`;
+const baseClass = `input pl-4 pr-0`;
 
 const dropdownContainerClass = `
     bg-white 
@@ -198,7 +195,7 @@ const Select = forwardRef<HTMLSelectElement, InputProps>((props: InputProps, ref
     const handleInternalSearchChange = (e: any) => {
         const text = e.target.value;
         const newFilteredOptions = options.filter(option =>
-            option.label.toLowerCase().includes(text.toLowerCase().trim()),
+            option.label.toLowerCase().includes(text.toLowerCase().trim())
         );
 
         setInternalSearchValue(text);
@@ -248,7 +245,7 @@ const Select = forwardRef<HTMLSelectElement, InputProps>((props: InputProps, ref
         handleOptionClick,
         internalValue,
         activeIndex,
-        uniqueInputId,
+        uniqueInputId
     };
 
     // =========================================================================
@@ -301,18 +298,15 @@ const Select = forwardRef<HTMLSelectElement, InputProps>((props: InputProps, ref
                             tabIndex={-1}
                         />
                     </div>
-
                     {/* OPERATIONAL ICON CONTAINER */}
-                    <div className="h-full w-8 flex items-center justify-center">
-                        <FontAwesomeIcon
-                            onClick={toggleDropdown}
-                            icon={faChevronDown}
-                            className={`text-normal transform transition motion-reduce:transition-none cursor-pointer ${
-                                dropdownOpen ? 'rotate-180' : 'rotate-0'
-                            }`}
-                        />
+                    <div
+                        onClick={toggleDropdown}
+                        className={`h-full w-8 flex items-center justify-center text-normal transform transition motion-reduce:transition-none cursor-pointer ${
+                            dropdownOpen ? 'rotate-180' : 'rotate-0'
+                        }`}
+                    >
+                        <ChevronDown />
                     </div>
-
                     {/* DROPDOWN MENU CONTAINER */}
                     <ul
                         // ref={listRef}

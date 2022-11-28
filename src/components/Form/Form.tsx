@@ -105,8 +105,6 @@ const Form = forwardRef<HTMLFormElement, FormProps>((props: FormProps, ref) => {
 
         // Find All HTML Form Elements
         Array.prototype.forEach.call(e.currentTarget.elements, element => {
-            console.log(element.name, element.type);
-
             if (element.type === 'text' && element.name) {
                 payload[element.name] = element.value;
             }
@@ -117,6 +115,12 @@ const Form = forwardRef<HTMLFormElement, FormProps>((props: FormProps, ref) => {
                 payload[element.name] = element.checked;
             }
             if (element.type === 'select-one' && element.name) {
+                payload[element.name] = element.value;
+            }
+            if (element.type === 'date' && element.name) {
+                payload[element.name] = element.value;
+            }
+            if (element.type === 'datetime-local' && element.name) {
                 payload[element.name] = element.value;
             }
             if (element.type === 'select-multiple' && element.name) {
@@ -153,7 +157,7 @@ const Form = forwardRef<HTMLFormElement, FormProps>((props: FormProps, ref) => {
         clearFieldError,
         disabledForm: disabled,
         inputValidateCallback,
-        validationStrategy,
+        validationStrategy
     };
     // =========================================================================
     // RENDER

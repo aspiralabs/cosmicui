@@ -4,6 +4,8 @@ import { overrideTailwindClasses } from 'tailwind-override';
 import { InputLabel, InputDescription, InputError } from '../Common/InputPieces';
 import { useFormContext } from '../Form/Form';
 import dayjs from 'dayjs';
+import { DatePickerDropdown } from './DatePickerDropdown';
+import { assignRefs } from '../../utility/general';
 
 // =============================================================================
 // CLASSES
@@ -27,6 +29,7 @@ const baseClass = `
     relative
     flex
     items-center
+    w-full
 `;
 
 // =============================================================================
@@ -39,12 +42,18 @@ export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
     required?: boolean;
     error?: string;
     disabled?: boolean;
+    displayFormat?: string;
+    datetime?: boolean;
+    native?: boolean;
 }
 
 interface DatePickerContextValues {
     id: string;
-    internalDate: Date;
+    internalDate: Date | undefined;
     currentDropdownView: string;
+    handleSelectDate: (date: Date) => void;
+    setCurrentDropdownView: any;
+    datetime: boolean;
 }
 
 // =============================================================================
@@ -52,7 +61,7 @@ interface DatePickerContextValues {
 // =============================================================================
 const CalendarIcon = () => {
     return (
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6 cursor-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5 cursor-icon">
             <path d="M12.75 12.75a.75.75 0 11-1.5 0 .75.75 0 011.5 0zM7.5 15.75a.75.75 0 100-1.5.75.75 0 000 1.5zM8.25 17.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zM9.75 15.75a.75.75 0 100-1.5.75.75 0 000 1.5zM10.5 17.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zM12 15.75a.75.75 0 100-1.5.75.75 0 000 1.5zM12.75 17.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zM14.25 15.75a.75.75 0 100-1.5.75.75 0 000 1.5zM15 17.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zM16.5 15.75a.75.75 0 100-1.5.75.75 0 000 1.5zM15 12.75a.75.75 0 11-1.5 0 .75.75 0 011.5 0zM16.5 13.5a.75.75 0 100-1.5.75.75 0 000 1.5z" />
             <path
                 fillRule="evenodd"
@@ -69,15 +78,37 @@ const CalendarIcon = () => {
 const DatePickerContext = React.createContext<DatePickerContextValues>({} as DatePickerContextValues);
 export const useDatePicker = () => React.useContext(DatePickerContext);
 
-const DatePicker = forwardRef<HTMLInputElement, InputProps>((props: InputProps, ref) => {
+const DatePicker = forwardRef<HTMLInputElement, InputProps>((props: InputProps, passedRef) => {
+    const internalRef = useRef<HTMLInputElement | null>(null);
+    const allyRef = useRef<HTMLInputElement | null>(null);
     const { formErrors, disabledForm, inputValidateCallback, validationStrategy } = useFormContext();
-    const { inputClass, label, required, description, onChange, onBlur, disabled, error, ...passThrough } = props;
+    const {
+        inputClass,
+        label,
+        required,
+        description,
+        onChange,
+        onBlur,
+        disabled,
+        error,
+        displayFormat = props.datetime ? 'MM/DD/YYYY h:mm A' : 'MM/DD/YYYY',
+        datetime = false,
+        native = false,
+        ...passThrough
+    } = props;
     const uniqueInputId = '1';
+
+    // HELPER
+    const determineInitialDate = () => {
+        if (!props.value) return undefined;
+        if (props.value === '') return undefined;
+        return new Date(props.value as string | number);
+    };
 
     // =========================================================================
     // LOCAL STATES
     // =========================================================================
-    const [internalDate, setInternalDate] = useState<Date>(new Date());
+    const [internalDate, setInternalDate] = useState<Date | undefined>(determineInitialDate());
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const [currentDropdownView, setCurrentDropdownView] = useState('picker');
 
@@ -106,43 +137,149 @@ const DatePicker = forwardRef<HTMLInputElement, InputProps>((props: InputProps, 
     const handleInputClick = () => {
         setDropdownOpen(!dropdownOpen);
     };
+
+    const handleSelectDate = (date: Date) => {
+        setDropdownOpen(false);
+        setInternalDate(date);
+        if (allyRef && allyRef.current) {
+            allyRef.current.focus();
+        }
+    };
+
+    // =========================================================================
+    // KEYPRESS LOGIC
+    // =================================    ========================================
+    const handleButtonKeyPress = (e: React.KeyboardEvent<HTMLElement>) => {
+        if (!dropdownOpen) {
+            switch (e.key) {
+                case ' ': // Space
+                case 'Enter':
+                    e.preventDefault();
+                    setDropdownOpen(true);
+            }
+        }
+
+        if (dropdownOpen) {
+            e.persist();
+
+            switch (e.key) {
+                case 'Esc':
+                case 'Escape':
+                    e.preventDefault();
+                    setDropdownOpen(false);
+                    return;
+                //  case 'ArrowUp':
+                //      e.preventDefault();
+                //      setActiveIndex(activeIndex <= 0 ? filteredOptions.length - 1 : activeIndex - 1);
+                //      break;
+                //  case 'ArrowDown':
+                //      e.preventDefault();
+                //      setActiveIndex(activeIndex + 1 === filteredOptions.length ? 0 : activeIndex + 1);
+                //      break;
+                //  case 'Enter':
+                //      e.preventDefault();
+                //      selectOption(filteredOptions[activeIndex]);
+                //      return;
+
+                //  case 'PageUp':
+                //  case 'Home':
+                //      e.preventDefault();
+                //      setActiveIndex(0);
+                //      return;
+                //  case 'PageDown':
+                //  case 'End':
+                //      e.preventDefault();
+                //      setActiveIndex(filteredOptions.length - 1);
+                //      return;
+            }
+        }
+    };
+
     // =========================================================================
     // VALUES
     // =========================================================================
     const values = {
         id: uniqueInputId,
         internalDate,
-        currentDropdownView
+        currentDropdownView,
+        handleSelectDate,
+        setCurrentDropdownView,
+        datetime
     };
+
+    // =========================================================================
+    // UPDATE INTERNAL INPUT VALUE AND TRIGGER ON CHANGE
+    // =========================================================================
+    useEffect(() => {
+        if (internalRef && internalRef.current) {
+            // Calculate Correct Format
+            const format = datetime ? 'YYYY-MM-DDThh:mm' : 'YYYY-MM-DD';
+            const inputValue = internalDate ? dayjs(internalDate).format(format) : undefined;
+            const input = internalRef.current;
+
+            // Update Value of Semantic Input
+            const setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value')?.set;
+            if (setter) setter.call(input, inputValue);
+
+            // Trigger Events
+            internalRef.current.dispatchEvent(new Event('change', { bubbles: true }));
+            internalRef.current.dispatchEvent(new Event('blur', { bubbles: true }));
+        }
+    }, [internalDate]);
+
     // =========================================================================
     // RENDER
     // =========================================================================
     return (
         <DatePickerContext.Provider value={values}>
-            <div className="flex flex-col text-sm w-full">
+            <div className="flex flex-col text-sm w-full ">
                 {label && <InputLabel label={label} required={required} htmlFor={uniqueInputId} />}
                 {description && <InputDescription description={description} />}
 
                 {/* SEMANTIC CONTAINER */}
-                <input
-                    ref={ref}
-                    {...passThrough}
-                    disabled={disabled || disabledForm}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    type="date"
-                    className="sr-only"
-                    tabIndex={-1}
-                />
+
+                {native && (
+                    <input
+                        ref={passedRef}
+                        type={datetime ? 'datetime-local' : 'date'}
+                        {...passThrough}
+                        className={`${baseClass} w-full`}
+                    />
+                )}
+                {!native && (
+                    <input
+                        ref={assignRefs(internalRef, passedRef)}
+                        {...passThrough}
+                        disabled={disabled || disabledForm}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        type={datetime ? 'datetime-local' : 'date'}
+                        className="sr-only"
+                        tabIndex={-1}
+                    />
+                )}
 
                 {/* VISUAL CONTAINER */}
-                <div className={baseClass}>
-                    <div className="flex-1" onClick={handleInputClick}>
-                        <p className="text-inherit">{dayjs(internalDate).format('MM/DD/YYYY')}</p>
+                {!native && (
+                    <div className="relative">
+                        <div className={baseClass} tabIndex={0} onKeyDown={handleButtonKeyPress} ref={allyRef}>
+                            <div onClick={handleInputClick} className="flex flex-1">
+                                <input
+                                    type="text"
+                                    tabIndex={-1}
+                                    value={internalDate && dayjs(internalDate).format(displayFormat)}
+                                    placeholder={props.placeholder}
+                                    className="flex-1 bg-surface bg-opacity-0 outline-none pointer-events-none"
+                                    disabled={true}
+                                />
+                            </div>
+                            <div onClick={handleInputClick} className="cursor-pointer">
+                                <CalendarIcon />
+                            </div>
+                        </div>
+                        {dropdownOpen && <DatePickerDropdown />}
                     </div>
-                    <CalendarIcon />
-                    {dropdownOpen && <DatePickerDropdown />}
-                </div>
+                )}
 
                 {/* Can Receive Error from prop or from form context */}
                 {error && <InputError error={error} />}
@@ -151,370 +288,5 @@ const DatePicker = forwardRef<HTMLInputElement, InputProps>((props: InputProps, 
         </DatePickerContext.Provider>
     );
 });
-
-// =============================================================================
-// DROPDOWN
-// =============================================================================
-interface MonthDayObject {
-    blank: number[];
-    available: number[];
-}
-
-interface DatePickerViewObject {
-    month: number;
-    year: number;
-    hour: number;
-    minute: number;
-}
-
-const DatePickerDropdown = () => {
-    const { currentDropdownView, internalDate } = useDatePicker();
-
-    const [currentMonthDays, setCurrentMonthDays] = useState<MonthDayObject>({
-        blank: [],
-        available: []
-    });
-
-    const [currentViewDate, setCurrentViewDate] = useState<DatePickerViewObject>({
-        month: 0,
-        year: 0,
-        hour: 0,
-        minute: 0
-    });
-
-    // =========================================================================
-    // ACTIONS
-    // =========================================================================
-    const initiateDropdown = () => {
-        let payload: DatePickerViewObject = { ...currentViewDate };
-        if (internalDate) {
-            payload = {
-                year: internalDate.getFullYear(),
-                month: internalDate.getMonth(),
-                hour: internalDate.getHours(),
-                minute: internalDate.getMinutes()
-            };
-        } else {
-            const today = new Date();
-            payload = {
-                year: today.getFullYear(),
-                month: today.getMonth(),
-                hour: today.getHours(),
-                minute: today.getMinutes()
-            };
-        }
-
-        getDaysOfCurrentMonth(payload);
-        setCurrentViewDate(payload);
-    };
-
-    const getDaysOfCurrentMonth = (currentViewObject: any) => {
-        const daysInMonth = new Date(currentViewObject.year, currentViewObject.month + 1, 0).getDate();
-
-        // find where to start calendar day of week
-        const dayOfWeek = new Date(currentViewObject.year, currentViewObject.month).getDay();
-        const blankdaysArray = [];
-        for (let i = 1; i <= dayOfWeek; i++) {
-            blankdaysArray.push(i);
-        }
-
-        const daysArray = [];
-        for (let i = 1; i <= daysInMonth; i++) {
-            daysArray.push(i);
-        }
-
-        setCurrentMonthDays({
-            blank: blankdaysArray,
-            available: daysArray
-        });
-
-        setCurrentViewDate(currentViewObject);
-    };
-
-    const determineDayColor = (day: number) => {
-        const today = new Date();
-        const compareDate = new Date(currentViewDate.year, currentViewDate.month, day);
-
-        // If date has been a selected date
-        if (internalDate && internalDate.toDateString() === compareDate.toDateString()) {
-            return 'bg-primary text-white';
-        }
-
-        // if date is today
-        if (today.toDateString() === compareDate.toDateString()) {
-            return 'bg-surface text-body hover:bg-primary hover:text-white';
-        }
-
-        // Past Date
-        if (today.getTime() > compareDate.getTime()) {
-            return 'text-body text-opacity-75 hover:bg-primary hover:text-white hover:text-opacity-100';
-        }
-
-        return 'text-body hover:bg-primary hover:text-white dark:text-body-dark';
-    };
-
-    const updatePickerView = (payload: DatePickerViewObject) => {
-        getDaysOfCurrentMonth(payload);
-    };
-
-    // =========================================================================
-    // EVENT HANDLERS
-    // =========================================================================
-    const handleMoveBackOneMonth = () => {
-        const newMonth = currentViewDate.month - 1;
-        if (newMonth === -1) {
-            let payload: DatePickerViewObject = { ...currentViewDate, month: 11, year: currentViewDate.year - 1 };
-            updatePickerView(payload);
-        } else {
-            let payload: DatePickerViewObject = { ...currentViewDate, month: newMonth };
-            updatePickerView(payload);
-        }
-    };
-
-    const handleMoveForwardOneMonth = () => {
-        const newMonth = currentViewDate.month + 1;
-        if (newMonth === 12) {
-            let payload: DatePickerViewObject = { ...currentViewDate, month: 0, year: currentViewDate.year + 1 };
-            updatePickerView(payload);
-        } else {
-            let payload: DatePickerViewObject = { ...currentViewDate, month: newMonth };
-            updatePickerView(payload);
-        }
-    };
-
-    const handleDateClick = (day: number) => {
-        // const selectedDate = new Date(currentYear, currentMonth, day);
-        // handleSelectDate(selectedDate, !datetime);
-    };
-
-    const toggleMonthPicker = () => {
-        // if (currentDropdownView === 'month_picker') setCurrentView('picker');
-        // else setCurrentView('month_picker');
-    };
-
-    const toggleYearPicker = () => {
-        // if (currentView === 'year_picker') setCurrentView('picker');
-        // else {
-        //     // Find index where current year is
-        //     const index = YEARS_ARRAY.findIndex(decade => {
-        //         return decade.find(year => year.value === currentYear);
-        //     });
-        //     setYearPickerIndex(index);
-        //     setCurrentView('year_picker');
-        // }
-    };
-
-    const handleMonthClick = (month: number) => {
-        // const newDate = moment(innerValue).set('month', month).toDate();
-        // handleSelectDate(newDate);
-        // setCurrentView('picker');
-    };
-
-    const handleGoPreviousDecade = () => {
-        // if (yearPickerIndex === 0) return;
-        // else setYearPickerIndex(yearPickerIndex - 1);
-    };
-
-    const handleGoNextDecade = () => {
-        // if (yearPickerIndex === YEARS_ARRAY.length - 1) return;
-        // else setYearPickerIndex(yearPickerIndex + 1);
-    };
-
-    const handleYearClick = (year: number) => {
-        // const newDate = moment(innerValue).set('year', year).toDate();
-        // handleSelectDate(newDate);
-        // setCurrentView('picker');
-    };
-
-    const monthButtonClasses = `text-sm transition py-2 rounded-md text-body dark:text-body-dark font-semibold hover:bg-surface-hover  cursor-pointer`;
-    const monthActiveClass = 'text-white bg-primary dark:text-white';
-
-    const yearButtonClasses = `text-sm transition py-2 rounded-md text-body dark:text-body-dark font-semibold bg-surface dark:bg-card-dark hover:bg-surface-hover cursor-pointer`;
-    const yearButtonActiveClass = 'text-white bg-primary dark:text-white dark:bg-primary';
-    const yearButtonDisabledClasses = `text-sm py-2 rounded-md text-body-light cursor-not-allowed `;
-
-    // =========================================================================
-    // EFFECTS
-    // =========================================================================
-    useEffect(() => initiateDropdown(), []);
-
-    // =========================================================================
-    // RENDER
-    // =========================================================================
-    return (
-        <div className="bg-white shadow p-4 absolute top-full left-0 w-72">
-            {currentDropdownView === 'picker' && (
-                <div className="h-full w-full">
-                    {/* TOP PART OF CALENDAR PICKER */}
-                    <div className="flex items-center justify-between mb-2">
-                        <div>
-                            <span
-                                onClick={toggleMonthPicker}
-                                className="font-bold text-heading dark:text-heading-dark text-lg cursor-pointer"
-                            >
-                                {MONTH_NAMES[currentViewDate.month]}
-                            </span>
-                            <span
-                                onClick={toggleYearPicker}
-                                className="font-normal ml-1 text-heading dark:text-heading-dark text-lg cursor-pointer"
-                            >
-                                {currentViewDate.year}
-                            </span>
-                        </div>
-                        <div className="flex gap-2">
-                            <button
-                                type="button"
-                                className="cursor-pointer duration-100 ease-in-out flex h-6 items-center justify-center p-1 rounded-full text-body dark:text-body-dark text-sm transition w-6 hover:bg-surface dark:hover:bg-surface-dark"
-                                onClick={handleMoveBackOneMonth}
-                            >
-                                {/* CHEVRON LEFT */}
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    viewBox="0 0 24 24"
-                                    fill="currentColor"
-                                    className="w-6 h-6"
-                                >
-                                    <path
-                                        fillRule="evenodd"
-                                        d="M7.72 12.53a.75.75 0 010-1.06l7.5-7.5a.75.75 0 111.06 1.06L9.31 12l6.97 6.97a.75.75 0 11-1.06 1.06l-7.5-7.5z"
-                                        clipRule="evenodd"
-                                    />
-                                </svg>
-                            </button>
-                            <button
-                                type="button"
-                                className="cursor-pointer duration-100 ease-in-out flex h-6 items-center justify-center p-1 rounded-full text-body dark:text-body-dark text-sm transition w-6 hover:bg-surface"
-                                onClick={handleMoveForwardOneMonth}
-                            >
-                                {/* CHEVRON RIGHT */}
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    viewBox="0 0 24 24"
-                                    fill="currentColor"
-                                    className="w-6 h-6"
-                                >
-                                    <path
-                                        fillRule="evenodd"
-                                        d="M16.28 11.47a.75.75 0 010 1.06l-7.5 7.5a.75.75 0 01-1.06-1.06L14.69 12 7.72 5.03a.75.75 0 011.06-1.06l7.5 7.5z"
-                                        clipRule="evenodd"
-                                    />
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-
-                    {/* DAY SECTION */}
-                    <div className="-mx-1 flex flex-wrap mb-3">
-                        {DAYS.map(day => {
-                            return (
-                                <div style={{ width: ' 14.26%' }} className="px-1" key={day}>
-                                    <div className="font-medium text-center text-heading text-xs">{day}</div>
-                                </div>
-                            );
-                        })}
-                    </div>
-
-                    {/*  DATE NUMBER SECTION */}
-                    <div className="-mx-1 flex flex-wrap">
-                        {currentMonthDays.blank.map(day => (
-                            <div key={day} style={{ width: ' 14.28%' }} className="p-1 text-center text-sm" />
-                        ))}
-                        {currentMonthDays.available.map(day => {
-                            return (
-                                <div
-                                    key={day}
-                                    style={{ width: ' 14.28%' }}
-                                    className="flex items-center justify-center mb-1 px-1"
-                                >
-                                    <div
-                                        onClick={() => handleDateClick(day)}
-                                        className={`cursor-pointer duration-100 ease-in-out rounded-full w-6 h-6 text-center text-sm transition flex items-center justify-center ${determineDayColor(
-                                            day
-                                        )}`}
-                                    >
-                                        {day}
-                                    </div>
-                                </div>
-                            );
-                        })}{' '}
-                    </div>
-
-                    {/* {datetime && (
-                        <React.Fragment>
-                            <div className="w-full h-px my-4 bg-gray dark:bg-gray-dark" />
-                            <section className="mt-2">
-                                <div className="flex justify-center items-center">
-                                    <NumberPicker
-                                        min={0}
-                                        max={24}
-                                        number={currentHour}
-                                        setNumber={value => updateHour(value)}
-                                    />
-                                    <span className="font-bold mx-2 text-xl">:</span>
-                                    <NumberPicker
-                                        min={0}
-                                        max={60}
-                                        number={currentMinute}
-                                        setNumber={value => updateMinute(value)}
-                                    />
-                                </div>
-                            </section>
-                        </React.Fragment>
-                    )} */}
-                </div>
-            )}
-        </div>
-    );
-};
-
-// =============================================================================
-// YEET
-// =============================================================================
-const generateArray = (start: number, end: number) => {
-    const filledArray = new Array(end - start + 1).fill({}).map((_, idx) => ({ value: start + idx, disabled: false }));
-
-    // Add Start Padding
-    const startPadding = start % 10;
-    for (let i = startPadding; i > 0; i--) {
-        filledArray.unshift({
-            disabled: true,
-            value: filledArray[0].value - 1
-        });
-    }
-
-    // Add End Padding
-    const endPadding = end % 10;
-    for (let i = 0; i < endPadding - 1; i++) {
-        filledArray.push({ disabled: true, value: filledArray[filledArray.length - 1].value + 1 });
-    }
-
-    return filledArray.reduce((resultArray: any, item, index) => {
-        const chunkIndex = Math.floor(index / 10);
-
-        if (!resultArray[chunkIndex]) {
-            resultArray[chunkIndex] = []; // start a new chunk
-        }
-        resultArray[chunkIndex].push(item);
-        return resultArray;
-    }, []);
-};
-
-const MONTH_NAMES = [
-    'January',
-    'February',
-    'March',
-    'April',
-    'May',
-    'June',
-    'July',
-    'August',
-    'September',
-    'October',
-    'November',
-    'December'
-];
-const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-const YEARS_ARRAY = generateArray(1943, 2045);
 
 export default DatePicker;

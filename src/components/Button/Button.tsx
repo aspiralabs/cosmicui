@@ -13,61 +13,11 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
     children?: ReactNode;
     className?: string;
     outlined?: boolean;
-    ghost?: boolean;
     loading?: boolean;
     variant?: string;
     icon?: any;
     iconPosition?: 'left' | 'right';
 }
-
-// =============================================================================
-// CLASSES
-// =============================================================================
-const base = `
-    font-medium 
-    rounded-theme-button
-    px-4 
-    text-sm 
-    transition 
-    duration-200 
-    motion-reduce:transition-none
-    disabled:cursor-not-allowed 
-    flex 
-    items-center 
-    gap-2.5
-    justify-center
-    h-10
-`;
-
-const baseGhostButton = `
-    ${base} 
-    bg-ghost 
-    text-ghost-pair 
-    hover:bg-ghost-hover 
-    disabled:bg-ghost-disabled
-`;
-
-const baseButton = (variant: string) => {
-    return `
-      ${base} 
-      bg-${variant} 
-      text-${variant}-pair 
-      hover:bg-${variant}-hover 
-      disabled:bg-${variant}-disabled
-    `;
-};
-
-const baseOutlineButton = (variant: string) => {
-    return `
-      ${base} 
-      border-2 
-      border-${variant} 
-      text-${variant} 
-      hover:border-${variant}-hover 
-      disabled:border-${variant}-disabled 
-      disabled:text-${variant}-disabled
-    `;
-};
 
 // =============================================================================
 // MAIN COMPONENT
@@ -77,8 +27,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>((props: ButtonProps, r
 
     const {
         className: passedClassName,
-        outlined,
-        ghost,
+        outlined = false,
         variant = 'primary',
         icon,
         iconPosition = 'right',
@@ -90,9 +39,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>((props: ButtonProps, r
     // =========================================================================
     // DETERMINE BUTTON STYLES
     // =========================================================================
-    let buttonClass = baseButton(variant || 'primary');
-    if (outlined) buttonClass = baseOutlineButton(variant || 'primary');
-    if (ghost) buttonClass = baseGhostButton;
+    let buttonClass = outlined ? `btn-${variant}-outlined` : `btn-${variant}`;
 
     // =========================================================================
     // RENDER

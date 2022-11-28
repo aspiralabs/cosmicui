@@ -3,10 +3,10 @@
     "publishConfig": {
         "registry": "https://npm.pkg.github.com/aspiralabs"
     },
-    "version": "0.0.4",
+    "version": "0.0.5",
     "description": "A simple template for a custom React component library",
     "scripts": {
-        "build": "rollup -c",
+        "build": "rm -rf dist && rollup -c",
         "test": "jest",
         "dev": "start-storybook -p 6006",
         "build-storybook": "build-storybook",

@@ -1,0 +1,37 @@
+import { Meta, Story, Canvas } from '@storybook/addon-docs/blocks';
+import Checkbox from '../components/Checkbox';
+
+<Meta title="General/Core vs React Components" />
+
+# **Core and React Components**
+
+One of the primary goals for this library is ease of use. We value clean markup and a satisfying developer experience and to facilate developers being able to focus on the task at hand versus wrestling with HTML elements or state management.
+
+Because of this very important goal, all of our components try to use core HTML5 semantic elements such `<button>` `<input typ="range" />` and `<progress>` to name a few. The result has given use a set of components that can be used in React, Vue, Angular or a 'vanilla' HTML project, which we call **Core Components**.
+
+Unfortunately, there are some components that just don't have a supported html element for example `<Toast />` and `<Modal />`, or are really only designed to be used in a React environment such as our `Form` component which comes with built in `yup` validation. These are called **React Components**.
+
+All **Core Components** can be used in React and other frameworks, but only **React Components** can be used in React. This will always be mentioned in the documentation.
+
+## **Using Core Components**
+
+Coming Soon
+
+## **Using Core Components in React**
+
+All core components have a React version. Core components can be used in React as the above examples, but it is recommend to use the **React Component** version of every component. There are added benefits and props that help clean up your code and can help develop features faster. See the difference between a checkbox with a label below:
+
+**Plain HTML**
+
+<Canvas>
+    <fieldset className="flex gap-2 items-center">
+        <input type="checkbox" className="checkbox-primary" />
+        <label className="text-sm text-body">I agree to T.O.S</label>
+    </fieldset>
+</Canvas>
+
+**React Component Version**
+
+<Canvas>
+    <Checkbox label="I agree to T.O.S" />
+</Canvas>

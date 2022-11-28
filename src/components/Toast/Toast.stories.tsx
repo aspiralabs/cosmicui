@@ -11,9 +11,6 @@ export const BasicToast = () => {
 
     const handleButtonClick = () => {
         Toast.success('Hello World');
-        Toast.warning('Hello World');
-        Toast.error('Hello World');
-        Toast.custom('Hello World', { variant: 'ghost' });
     };
 
     return (

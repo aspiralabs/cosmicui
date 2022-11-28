@@ -2,89 +2,105 @@ import { Meta, Story, Canvas } from '@storybook/addon-docs/blocks';
 
 <Meta title="General/Introduction" />
 
-# Introduction
+# Cosmic UI
 
-This is a proof of concept component library system that can be used for DDSI projects. This library was designed for React 17.0 and above.
+Cosmic UI is a set of commonly used components built upon TailwindCSS created to facilate high degrees of customization in a simple to modify fashion.
 
-## **Goals**
+## **Color Language**
 
-There are several goals this library tries to accomplish. These are explained in detail down below.
+Coismic uses a color variant system in where each variant has it's own set of colors associated with it.
 
--   Easy to use
--   Lightweight and Responsive
--   Minimal Maintenance
--   Minimal Depedencies
+The basic variants are:
 
-## **Installation**
+-   **primary**
+-   **secondary**
+-   **error**
+-   **warning**
+-   **success**
+-   **ghost**
+-   **surface**
 
-You will need to have a GitLab Access token to download this package. Once you have your token make sure to save it to your global `.npmrc` file.
-You can then install using yarn or npm
+Each of these **variants** have a subset of shades for different states such as `hover` and `disabled`,
 
-```bash
-# If using NPM
-npm i @ddsi/olaf-ui
-```
+Please see the Color Language Page for more details.
 
-```bash
-# If using Yarn
-yarn add @ddsi/olaf-ui
-```
+## **TailwindCSS Usage**
 
-## **How we are achieving these goals**
+While you are not required to use TailwindCSS in your projects, our library uses TailwindCSS under the hood and be easily extended using the `tailwind.config.js` file. Every component is designed to be able to take in additional tailwind classes to further customize your layouts.
 
-### **Easy To Use**
+### **Tailwind Configuration and Principles**
 
-Many components are _based_ off semantic HTML version. This means that our `Button` component uses the HTML
-`<button>` element, and our `Input` component uses the `<input>` under the hood. Various component libraries just
-use generic `<div>` elements to make their components, and thus miss out various functionalities HTML has to offer,
-and will offer in the future. This library aims to use "vanilla/semantic" html where ever possible.
+If you decide to use TailwindCSS in alongside this project, you will be able to control the whole theme from the core `tailwind.config.js` file. If you know how to set custom values in this file, you know how to customize the base theme!
 
-### **Lightweight and Responsive**
+To get started you will need to add the `CosmicPlugin` to the tailwind config file.
 
-We utilize **TailwindCSS** for styling our components, and we highly recommend utilizing TailwindCSS in your projects but it is not necessary.
-TailwindCSS is a utility css framework where each class maps to one css value. For example `flex` maps to `display: flex;` and `mt-4` maps to `margin-top: 1rem;`.
-The benefit to this is this library through tree shaking **only ships with what it uses**, and because multiple components may use flex or margins, there is
-minimal css as one class is used in many places.
-
-**Tailwind Example (88 character counter)**
-
-```
-// element example
-<button class="flex p-4">
-<input class="p-4">
-
-// output css
-.flex { display: flex}
-.p-4 {padding: 1rem}
-```
-
-**BEM Example (163 character count)**
-
-```
-// element example
-<button class="header_btn_main">
-<input class="form_input_text">
-
-// output css
-.header_btn_main {
-    display: flex;
-    padding: 1rem;
-}
-
-.form_input_text {
-    padding: 1rem;
+```javascript
+module.exports = {
+    ...,
+    plugins: [CosmicPlugin()]
 }
 ```
 
-### **Minimal Maintenance**
+You may overwrite anything in the cosmic plugin by simply naming the key the same as a cosmic key in the configuration. For example, the default `primary` color variant is a blue color `#3b82f6` and if I wanted to change it to red I would do the following.
 
-Because our components use the base html element under the hood we reduce the amount of updates we have to do as HTML standards change.
-HTML Html & Javascript features will automatically be available as they release. This means this library and DDSI projects can take immediate
-use of new html standards and features without having to update the component package.
+```javascript
+module.exports = {
+    ...,
+    theme: {
+        primary: { DEFAULT: '#FF0000' } // #FF0000 is red
+    }
+}
+```
 
-### **Minimal Depedencies**
+**Note:** Cosmic will merge any value you provide in this file, with our default values. User defined values always take precedence. This means if you were to do the above you will only overwrite the `primary` variant and the base theme `secondary` `success` `error` and other variants will remain untouched.
 
-While there are quite a few development depedencies, there are no shipped depedencies with this library.
-There is only one required peer dependency (React) and one optional peer dependency (TailwindCSS)
+### Tailwind Base theme
 
-We try to do everything with base html elements, css animations, and only the javascript utilized by React.
+The base theme TailwindCSS Configuration looks like this.
+
+```javascript
+module.exports = {
+    theme: {
+        extend: {
+            borderRadius: {
+                'theme-button': '0.25rem',
+                'theme-input': '0.25rem'
+            },
+            fontSize: {
+                'theme-input-description': '0.7rem',
+                'theme-input-label': '0.8rem'
+            },
+            transitionProperty: {
+                width: 'width'
+            },
+            animation: {
+                indeterminate: 'indeterminate 1s linear infinite'
+            },
+            keyframes: {
+                indeterminate: {
+                    '0%': { transform: 'translateX(0) scaleX(0)' },
+                    '40%': { transform: 'translateX(0) scaleX(0.4)' },
+                    '100%': { transform: 'translateX(100%) scaleX(0.5)' }
+                }
+            },
+            ringWidth: {
+                'theme-radio-border-width': '5px'
+            }
+        },
+        colors: {
+            primary: { DEFAULT: '#3b82f6', pair: '#fafbfe', hover: '#0065FF', disabled: '#4C9AFF' },
+            secondary: { DEFAULT: '#172B4D', pair: '#fafbfe', hover: '#344563', disabled: '#42526E' },
+            purple: { DEFAULT: '#6554c0', pair: '#fafbfe', hover: '#8777D9', disabled: '#998DD9' },
+            ghost: { DEFAULT: '#ebecf0', pair: '#172B4D', hover: '#DFE1E6', disabled: '#F4F5F7' },
+            error: { DEFAULT: '#fe5531', pair: '#1c2d4c', hover: '#FF7452', disabled: '#FF8F73' },
+            warning: { DEFAULT: '#FF991F', pair: '#1c2d4c', hover: '#FFC400', disabled: '#FFE380' },
+            success: { DEFAULT: '#7af1c0', pair: '#016946', hover: '#57D9A3', disabled: '#ABF5D1' },
+            surface: { DEFAULT: '#F4F5F7', pair: '', hover: '#ebecf0', disabled: '' },
+            heading: { DEFAULT: '#172B4D', pair: '', hover: '', disabled: '' },
+            body: { DEFAULT: '#6B778C', pair: '', hover: '', disabled: '' },
+            white: { DEFAULT: '#ffffff', pair: '', hover: '', disabled: '' },
+            black: { DEFAULT: '#000000', pair: '', hover: '', disabled: '' }
+        }
+    }
+};
+```

@@ -16,27 +16,6 @@ export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
 }
 
 // =============================================================================
-// CLASSES
-// =============================================================================
-const baseClass = `
-    bg-surface 
-    hover:bg-surface-hover 
-    px-4 
-    h-10 
-    rounded-theme-input
-    text-sm
-    placeholder:text-body
-    placeholder:text-opacity-50
-    text-body
-    outline-primary
-    disabled:cursor-not-allowed
-    disabled:hover:bg-surface
-    disabled:bg-opacity-75
-    disabled:hover:bg-opacity-75
-    motion-reduce:transition-none
-`;
-
-// =============================================================================
 // RENDER
 // =============================================================================
 const Input = forwardRef<HTMLInputElement, InputProps>((props: InputProps, ref) => {
@@ -78,7 +57,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>((props: InputProps, ref) 
                 disabled={disabled || disabledForm}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                className={overrideTailwindClasses(`${baseClass} ${inputClass}`)}
+                className={overrideTailwindClasses(`input ${inputClass}`)}
             />
 
             {/* Can Receive Error from prop or from form context */}
