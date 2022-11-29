@@ -3,7 +3,7 @@
     "publishConfig": {
         "registry": "https://npm.pkg.github.com/aspiralabs"
     },
-    "version": "0.0.12",
+    "version": "0.0.13",
     "description": "A simple template for a custom React component library",
     "scripts": {
         "build": "rm -rf dist && rollup -c",
