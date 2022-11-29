@@ -1,5 +1,4 @@
 import React from 'react';
-import { overrideTailwindClasses } from 'tailwind-override';
 
 interface BadgeProps {
     children: any;
@@ -33,7 +32,7 @@ const Badge = (props: BadgeProps) => {
     };
 
     return (
-        <span className={overrideTailwindClasses(`${baseClass} ${props.className}`)}>
+        <span className={`${baseClass} ${props.className}`}>
             {props.children}
             {closeable && (
                 <button type="button" className={closeButtonClass} onClick={handleCloseClick}>

@@ -1,7 +1,4 @@
-import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { forwardRef, HTMLAttributes, InputHTMLAttributes, useRef, useState } from 'react';
-import { overrideTailwindClasses } from 'tailwind-override';
 import { InputLabel, InputDescription, InputError } from '../Common/InputPieces';
 import { useFormContext } from '../Form/Form';
 
@@ -275,10 +272,10 @@ const Select = forwardRef<HTMLSelectElement, InputProps>((props: InputProps, ref
 
                 {/* VISUAL INPUT CONTAINER */}
                 <button
-                    className={overrideTailwindClasses(`
+                    className={`
                         ${baseClass} 
                         focus:outline outline-primary
-                    `)}
+                    `}
                     onClick={handleInputClick}
                     aria-haspopup="listbox"
                     aria-controls={`${uniqueInputId}_dropdown`}
@@ -313,10 +310,10 @@ const Select = forwardRef<HTMLSelectElement, InputProps>((props: InputProps, ref
                         role="listbox"
                         id={`${uniqueInputId}_dropdown`}
                         tabIndex={-1}
-                        className={overrideTailwindClasses(`
-                        ${dropdownContainerClass} 
-                        ${dropdownOpen ? 'absolute' : 'hidden'}
-                    `)}
+                        className={`
+                            ${dropdownContainerClass} 
+                            ${dropdownOpen ? 'absolute' : 'hidden'}
+                        `}
                         // aria-labelledby={selectId}
                         style={{ maxHeight: 200 }}
                     >

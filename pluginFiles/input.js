@@ -103,8 +103,40 @@ const generateInputClasses = (theme, variants) => {
     // =========================================================================
     // RANGE
     // =========================================================================
+    let range = {};
 
-    return { ...inputs, ...checkbox, ...radio, ...switches };
+    const baseRangeClass = `appearance-none bg-surface rounded-full h-2`;
+
+    // Generate Variants
+    variants.forEach(variant => {
+        const checkColor = theme(`colors.${variant}.DEFAULT`);
+
+        // Base Varirant
+        range[`.range-${variant}`] = {
+            backgroundImage: `linear-gradient(${checkColor}, ${checkColor})`,
+            backgroundRepeat: 'no-repeat',
+            backgroundSize: '0% 100%',
+            [`@apply ${baseRangeClass}`]: {}
+        };
+
+        // Track
+        range[`.range-${variant}::-webkit-slider-runnable-track`] = {
+            [`@apply appearance-none`]: {}
+        };
+
+        range[`.range-${variant}::-webkit-slider-thumb`] = {
+            [`@apply appearance-none h-5 w-5 rounded-full bg-primary cursor-pointer transition`]: {}
+        };
+
+        range[`.range-${variant}::-webkit-slider-thumb:hover`] = {
+            boxShadow: `${checkColor}50 0px 0px 0px 8px;`
+        };
+
+        range[`.range-${variant}::-webkit-slider-thumb:active`] = {
+            boxShadow: `${checkColor}50 0px 0px 0px 11px;`
+        };
+    });
+    return { ...inputs, ...checkbox, ...radio, ...switches, ...range };
 };
 
 module.exports = generateInputClasses;

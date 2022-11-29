@@ -1,8 +1,5 @@
 import React, { ButtonHTMLAttributes, forwardRef, ReactNode } from 'react';
-import { overrideTailwindClasses } from 'tailwind-override';
-import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSpinner } from '@fortawesome/free-solid-svg-icons';
+
 import { useFormContext } from '../Form/Form';
 import { Spinner } from '../Common/Spinner';
 
@@ -47,7 +44,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>((props: ButtonProps, r
     return (
         <button
             ref={ref}
-            className={overrideTailwindClasses(`${buttonClass} ${passedClassName}`)}
+            className={`${buttonClass} ${passedClassName}`}
             disabled={props.disabled || disabledForm || loading}
             {...passThrough}
         >

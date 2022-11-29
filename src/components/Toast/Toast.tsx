@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { motion, useAnimation, AnimatePresence } from 'framer-motion';
 import { useCosmic } from '../CosmicProvider';
-import { options } from 'joi';
 
 export interface ToastObject {
     message: string;

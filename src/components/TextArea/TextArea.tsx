@@ -1,7 +1,5 @@
-import { required } from 'joi';
 import React, { InputHTMLAttributes, MutableRefObject, Ref, useEffect, useRef, useState } from 'react';
 import { forwardRef } from 'react';
-import { overrideTailwindClasses } from 'tailwind-override';
 import { assignRefs } from '../../utility/general';
 import { InputLabel, InputDescription, InputError } from '../Common/InputPieces';
 import { useFormContext } from '../Form/Form';
@@ -63,7 +61,7 @@ const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>((props, passedRe
                 {...passThrough}
                 ref={assignRefs(textareaRef, passedRef)}
                 onChange={textAreaChange}
-                className={overrideTailwindClasses(`textarea ${props.className}`)}
+                className={`textarea ${props.className}`}
                 value={value}
             />
 

@@ -3,7 +3,6 @@
 // =============================================================================
 
 import React, { useState, useEffect } from 'react';
-import { overrideTailwindClasses } from 'tailwind-override';
 import { useDatePicker } from './DatePicker';
 import dayjs from 'dayjs';
 import Input from '../Input';
@@ -437,10 +436,7 @@ export const DatePickerDropdown = () => {
                         {MONTHS.map((month, index) => {
                             if (currentViewDate.month === index) {
                                 return (
-                                    <button
-                                        key={index}
-                                        className={overrideTailwindClasses(`${monthButtonClasses} ${monthActiveClass}`)}
-                                    >
+                                    <button key={index} className={`${monthButtonClasses} ${monthActiveClass}`}>
                                         {month}
                                     </button>
                                 );
@@ -484,9 +480,7 @@ export const DatePickerDropdown = () => {
                                 if (year.value === currentViewDate.year) {
                                     return (
                                         <button
-                                            className={overrideTailwindClasses(
-                                                `${yearButtonClasses} ${yearButtonActiveClass}`
-                                            )}
+                                            className={`${yearButtonClasses} ${yearButtonActiveClass}`}
                                             key={year.value}
                                             onClick={() => handleYearClick(year.value)}
                                         >

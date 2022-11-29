@@ -2,16 +2,14 @@ import React from 'react';
 import Range from './Range';
 
 export default {
-    title: 'Range',
+    title: 'Range'
 };
 
 export const BasicRange = () => {
-   
-
     return (
-        <div className="flex gap-4">
+        <div className="flex flex-col gap-8 p-8">
             <Range />
+            <input type="range" className="range-primary" />
         </div>
     );
 };
-

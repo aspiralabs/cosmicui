@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { overrideTailwindClasses } from 'tailwind-override';
 
 interface ProgressProps {
     value?: number;
@@ -36,7 +35,7 @@ const Progress = (props: ProgressProps) => {
     `;
 
     return (
-        <div className={overrideTailwindClasses(`w-full bg-surface rounded-full h-2 overflow-hidden ${className}`)}>
+        <div className={`w-full bg-surface rounded-full h-2 overflow-hidden ${className}`}>
             {!indeterminate && <div className={`${baseClass}`} style={{ width: `${percentageValue}%` }} />}
             {indeterminate && <div className={`${baseClass} w-full animate-indeterminate transform origin-[0%_50%]`} />}
         </div>

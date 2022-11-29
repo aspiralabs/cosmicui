@@ -1,5 +1,4 @@
 import React, { forwardRef, InputHTMLAttributes } from 'react';
-import { overrideTailwindClasses } from 'tailwind-override';
 import { InputLabel, InputDescription, InputError } from '../Common/InputPieces';
 import { useFormContext } from '../Form/Form';
 
@@ -57,7 +56,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>((props: InputProps, ref) 
                 disabled={disabled || disabledForm}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                className={overrideTailwindClasses(`input ${inputClass}`)}
+                className={`input ${inputClass}`}
             />
 
             {/* Can Receive Error from prop or from form context */}
