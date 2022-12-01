@@ -16,8 +16,10 @@ const cosmicPlugin = plugin(function ({ addUtilities, addComponents, e, prefix, 
     console.log('Initializing Cosmic Plugin');
     console.log('================================================');
 
-    // Grab All Color Variants
-    const variants = Object.keys(theme('colors'));
+    const colors = theme('colors');
+    const variants = Object.keys(colors);
+
+    console.log(colors);
 
     // Add Components
     addComponents(generateButtonClasses(theme, variants));

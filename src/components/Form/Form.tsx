@@ -103,26 +103,37 @@ const Form = forwardRef<HTMLFormElement, FormProps>((props: FormProps, ref) => {
         // Payload for Return
         const payload: FormValueReturn = {};
 
+        // Input types that have a 'element.value' object
+        const inputTypes = [
+            'password',
+            'text',
+            'email',
+            'textarea',
+            'select-one',
+            'date',
+            'datetime-local',
+            'color',
+            'month',
+            'number',
+            'tel',
+            'time',
+            'url',
+            'week'
+        ];
+
         // Find All HTML Form Elements
         Array.prototype.forEach.call(e.currentTarget.elements, element => {
-            if (element.type === 'text' && element.name) {
+            // Get all elements with 'element.value'
+            if (inputTypes.includes(element.type) && element.name) {
                 payload[element.name] = element.value;
             }
-            if (element.type === 'textarea' && element.name) {
-                payload[element.name] = element.value;
-            }
+
+            // Checkboxes dont have 'element.value'
             if (element.type === 'checkbox' && element.name) {
                 payload[element.name] = element.checked;
             }
-            if (element.type === 'select-one' && element.name) {
-                payload[element.name] = element.value;
-            }
-            if (element.type === 'date' && element.name) {
-                payload[element.name] = element.value;
-            }
-            if (element.type === 'datetime-local' && element.name) {
-                payload[element.name] = element.value;
-            }
+
+            // Multiple Selects are processed and turned into arrays
             if (element.type === 'select-multiple' && element.name) {
                 const valuesArray: any[] = [];
                 Array.prototype.forEach.call(element.selectedOptions, option => {
@@ -132,6 +143,8 @@ const Form = forwardRef<HTMLFormElement, FormProps>((props: FormProps, ref) => {
                 payload[element.name] = valuesArray;
             }
         });
+
+        console.log('payload', payload);
 
         // Form Validation
         if (validation) {

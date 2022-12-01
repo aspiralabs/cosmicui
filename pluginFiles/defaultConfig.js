@@ -35,7 +35,6 @@ module.exports = {
         colors: {
             primary: { DEFAULT: '#3b82f6', pair: '#fafbfe', hover: '#0065FF', disabled: '#4C9AFF' },
             secondary: { DEFAULT: '#172B4D', pair: '#fafbfe', hover: '#344563', disabled: '#42526E' },
-            purple: { DEFAULT: '#6554c0', pair: '#fafbfe', hover: '#8777D9', disabled: '#998DD9' },
             ghost: { DEFAULT: '#ebecf0', pair: '#172B4D', hover: '#DFE1E6', disabled: '#F4F5F7' },
             error: { DEFAULT: '#fe5531', pair: '#1c2d4c', hover: '#FF7452', disabled: '#FF8F73' },
             warning: { DEFAULT: '#FF991F', pair: '#1c2d4c', hover: '#FFC400', disabled: '#FFE380' },

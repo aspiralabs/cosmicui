@@ -18,19 +18,17 @@ export const BasicForm = () => {
         console.log('submitted', values);
     };
 
-    const formSchema = yup.object().shape({
-        firstName: yup.string().min(3, 'Name must be three characters long').required('First Name is Required'),
-        lastName: yup.string().required('Last Name is Required')
+    const schema = yup.object().shape({
+        password: yup.string().required()
     });
 
     return (
-        <div className="flex flex-col gap-4">
-            <Form onSubmit={handler} className="flex flex-col gap-4 w-96">
-                <Input name="firstName" placeholder="John Doe" />
-                <DatePicker name="myDate" native />
-                <DatePicker name="myDate2" />
-                <Button variant="ghost" type="submit">
-                    Submit
+        <div className="flex flex-col gap-4 w-96">
+            <Form onSubmit={handler} validation={schema} className="flex flex-col gap-6 w-full">
+                <Input label="Password" name="password" type="password" />
+
+                <Button variant="primary" className="w-full">
+                    Login
                 </Button>
             </Form>
         </div>
