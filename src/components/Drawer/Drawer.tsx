@@ -38,7 +38,9 @@ const Drawer = (props: DrawerProps) => {
 
     return (
         <motion.div
-            className="fixed top-0 left-0 h-screen w-screen pointer-events-none"
+            className={`fixed top-0 left-0 h-screen w-screen 
+                ${props.open ? 'pointer-events-auto' : 'pointer-events-none'}
+            `}
             animate={controls}
             variants={backdropAnimationStyles}
             initial="inactive"
