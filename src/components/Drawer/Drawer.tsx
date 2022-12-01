@@ -1,5 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { motion, useAnimation } from 'framer-motion';
+import React, { useRef } from 'react';
 import { onClickOutside } from '../../hooks';
 
 interface DrawerProps {
@@ -11,54 +10,35 @@ interface DrawerProps {
 }
 
 const Drawer = (props: DrawerProps) => {
-    const { width = 300, location = 'right', onClose } = props;
-    const controls = useAnimation();
+    const { width = 300, location = 'right', onClose, open } = props;
     const drawerRef = useRef<any>(null);
-
-    const drawerAnimationStyles = {
-        active: { x: location === 'right' ? `calc(100vw - ${width}px)` : 0 },
-        inactive: { x: location === 'right' ? '100vw' : -width }
-    };
-
-    const backdropAnimationStyles = {
-        active: { background: 'rgba(0,0,0,0.25)' },
-        inactive: { background: 'rgba(0,0,0,0)' }
-    };
 
     onClickOutside(drawerRef, () => {
         onClose && onClose();
     });
 
-    // =========================================================================
-    // EFFECTS
-    // =========================================================================
-    useEffect(() => {
-        controls.start(props.open ? 'active' : 'inactive');
-    }, [props.open, controls]);
+    const backdropBaseClass = 'fixed top-0 left-0 h-screen w-screen bg-black transition ease-in-out duration-300';
+    const backdropClosedStyles = 'bg-opacity-0 pointer-events-none';
+    const backdropOpenStyles = 'bg-opacity-25 pointer-events-auto';
+
+    const drawerPosition = location === 'right' ? 'right-0' : 'left-0';
+    const drawerBaseClass = `h-screen bg-white pointer-events-auto absolute transition transform ${drawerPosition} ease-in-out duration-300`;
+    const drawerOpenClass = 'translate-x-0';
+    const drawerCloseClass = location === 'right' ? 'translate-x-full' : '-translate-x-full';
 
     return (
-        <motion.div
-            className={`fixed top-0 left-0 h-screen w-screen 
-                ${props.open ? 'pointer-events-auto' : 'pointer-events-none'}
-            `}
-            animate={controls}
-            variants={backdropAnimationStyles}
-            initial="inactive"
-            transition={{ type: 'spring', damping: 10, mass: 0.2, stiffness: 100 }}
+        <div
+            className={`${backdropBaseClass} ${open ? backdropOpenStyles : backdropClosedStyles}`}
             style={{ zIndex: 100 }}
         >
-            <motion.div
-                className="h-screen bg-white pointer-events-auto"
+            <div
+                className={`${drawerBaseClass} ${open ? drawerOpenClass : drawerCloseClass}`}
                 style={{ width }}
-                animate={controls}
-                variants={drawerAnimationStyles}
-                initial="inactive"
-                transition={{ type: 'spring', damping: 10, mass: 0.2, stiffness: 100 }}
                 ref={drawerRef}
             >
                 {props.children}
-            </motion.div>
-        </motion.div>
+            </div>
+        </div>
     );
 };
 

@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import Button from '../Button';
 import Form from '../Form';
-import Drawer from './Drawer';
 import Input from '../Input';
+import Drawer from './Drawer';
 
 export default {
     title: 'Drawer'
