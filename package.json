@@ -3,7 +3,7 @@
     "publishConfig": {
         "registry": "https://npm.pkg.github.com/aspiralabs"
     },
-    "version": "0.0.14",
+    "version": "0.0.16",
     "description": "React Component Library based on TailwindCSS",
     "scripts": {
         "build": "rm -rf dist && rollup -c",

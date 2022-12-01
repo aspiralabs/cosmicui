@@ -3,7 +3,10 @@ module.exports = {
         {
             pattern: /(btn|badge|progress|checkbox|radio|switch)-./,
             variants: ['hover', 'disabled', 'focus']
-        }
+        },
+        'fixed',
+        'absolute',
+        'relative'
     ],
     theme: {
         extend: {
