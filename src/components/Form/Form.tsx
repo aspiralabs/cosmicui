@@ -1,4 +1,4 @@
-import React, { FormHTMLAttributes, forwardRef, InputHTMLAttributes, ReactElement, useState } from 'react';
+import React, { FormHTMLAttributes, forwardRef, useState } from 'react';
 import { AnyObjectSchema } from 'yup';
 
 interface FormProps extends FormHTMLAttributes<HTMLFormElement> {
@@ -23,6 +23,7 @@ interface FormProps extends FormHTMLAttributes<HTMLFormElement> {
      * @option submit - Validates the input when the form submits
      */
     validationStrategy?: 'live' | 'blur' | 'submit';
+    defaultFormValues?: { [key: string]: any };
 }
 
 interface FormValueReturn {
@@ -42,13 +43,55 @@ interface FormContextValues {
     validationStrategy: 'live' | 'blur' | 'submit';
 }
 
+/**
+ * Used to recursively loop through children of a form and assign default values to any inputs.
+ * Note that an input name prop has to match the key in the defaultFormValues.
+ *
+ * Example
+ * -------------------------------------------------
+ * Input: <input name="firstName" />
+ * DefaultFormValue = { firstName: 'Dave' }
+ * -------------------------------------------------
+ *
+ * @param children
+ * @param defaultFormValues
+ * @returns
+ */
+const applyRecursiveProps = (children: React.ReactNode, defaultFormValues: { [key: string]: any }) => {
+    if (typeof children === 'undefined') return; // has no children elements
+
+    return React.Children.map(children, child => {
+        if (!React.isValidElement(child)) return child;
+
+        // Recursively general children if there are children
+        const recursiveGrandchildren: any = applyRecursiveProps(child.props.children, defaultFormValues);
+
+        // If a Name Value Exists, we've usually hit an element with no children (such as input)
+        if (defaultFormValues[child.props.name]) {
+            return React.cloneElement(child, { ...child.props, defaultValue: defaultFormValues[child.props.name] });
+        }
+        // If a name value doesn't exist we may or may not have children.
+        else {
+            return React.cloneElement(child, { ...child.props, children: recursiveGrandchildren });
+        }
+    });
+};
+
 // =============================================================================
 // MAINC OMPONENT
 // =============================================================================
 const FormContext = React.createContext<FormContextValues>({} as FormContextValues);
 const Form = forwardRef<HTMLFormElement, FormProps>((props: FormProps, ref) => {
     // Props
-    const { onSubmit, children, validation, validationStrategy = 'submit', disabled, ...passThrough } = props;
+    const {
+        onSubmit,
+        children,
+        validation,
+        validationStrategy = 'submit',
+        disabled,
+        defaultFormValues,
+        ...passThrough
+    } = props;
 
     //States
     const [formErrors, setFormErrors] = useState<FormErrorMessages>({} as FormErrorMessages);
@@ -162,7 +205,7 @@ const Form = forwardRef<HTMLFormElement, FormProps>((props: FormProps, ref) => {
     };
 
     // =========================================================================
-    // CREATE CHILDREN
+    // VALUES
     // =========================================================================
     const values = {
         formErrors,
@@ -172,13 +215,14 @@ const Form = forwardRef<HTMLFormElement, FormProps>((props: FormProps, ref) => {
         inputValidateCallback,
         validationStrategy
     };
+
     // =========================================================================
     // RENDER
     // =========================================================================
     return (
         <FormContext.Provider value={values}>
             <form ref={ref} {...passThrough} onSubmit={handleSubmit}>
-                {children}
+                {defaultFormValues ? applyRecursiveProps(children, defaultFormValues) : children}
             </form>
         </FormContext.Provider>
     );

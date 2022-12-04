@@ -4,11 +4,19 @@ module.exports = {
             pattern: /(btn|badge|progress|checkbox|radio|switch)-./,
             variants: ['hover', 'disabled', 'focus']
         },
+
         'fixed',
         'absolute',
         'relative',
         'h-screen',
-        'w-screen'
+        'w-screen',
+        'z-modal-z',
+        'z-drawer-z',
+        'pointer-events-none', // Used for Drawer and Modal Backdrop
+        'pointer-events-auto', // Used for Drawer and Modal Backdrops
+        'bg-black', // Used for Modal Backdrops
+        'bg-white',
+        'bg-opacity-25' // Used For Modal Backdrop
     ],
     theme: {
         extend: {

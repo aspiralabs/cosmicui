@@ -5,9 +5,6 @@ import Input from '../Input';
 import Form from './Form';
 
 import * as yup from 'yup';
-import Select from '../Select';
-import TextArea from '../TextArea';
-import DatePicker from '../DatePicker';
 
 export default {
     title: 'Form'
@@ -24,8 +21,17 @@ export const BasicForm = () => {
 
     return (
         <div className="flex flex-col gap-4 w-96">
-            <Form onSubmit={handler} validation={schema} className="flex flex-col gap-6 w-full">
-                <Input label="Password" name="password" type="password" />
+            <Form
+                onSubmit={handler}
+                validation={schema}
+                className="flex flex-col gap-6 w-full"
+                defaultFormValues={{ firstName: 'David', lastName: 'Ludemann' }}
+            >
+                <Input label="First Name" name="firstName" />
+
+                <div className="border p-8">
+                    <Input label="Last Name" name="lastName" />
+                </div>
 
                 <Button variant="primary" className="w-full">
                     Login
