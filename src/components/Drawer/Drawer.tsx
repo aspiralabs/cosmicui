@@ -17,7 +17,7 @@ const Drawer = (props: DrawerProps) => {
         onClose && onClose();
     });
 
-    const backdropBaseClass = 'fixed top-0 left-0 h-screen w-screen bg-black transition ease-in-out duration-300';
+    const backdropBaseClass = `fixed top-0 left-0 h-screen w-screen bg-black transition ease-in-out duration-300 z-drawer-z`;
     const backdropClosedStyles = 'bg-opacity-0 pointer-events-none';
     const backdropOpenStyles = 'bg-opacity-25 pointer-events-auto';
 
@@ -27,10 +27,7 @@ const Drawer = (props: DrawerProps) => {
     const drawerCloseClass = location === 'right' ? 'translate-x-full' : '-translate-x-full';
 
     return (
-        <div
-            className={`${backdropBaseClass} ${open ? backdropOpenStyles : backdropClosedStyles}`}
-            style={{ zIndex: 100 }}
-        >
+        <div className={`${backdropBaseClass} ${open ? backdropOpenStyles : backdropClosedStyles}`}>
             <div
                 className={`${drawerBaseClass} ${open ? drawerOpenClass : drawerCloseClass}`}
                 style={{ width }}

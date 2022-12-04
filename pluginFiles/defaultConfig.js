@@ -6,7 +6,9 @@ module.exports = {
         },
         'fixed',
         'absolute',
-        'relative'
+        'relative',
+        'h-screen',
+        'w-screen'
     ],
     theme: {
         extend: {
@@ -22,17 +24,32 @@ module.exports = {
                 width: 'width'
             },
             animation: {
-                indeterminate: 'indeterminate 1s linear infinite'
+                indeterminate: 'indeterminate 1s linear infinite',
+                'modal-intro': 'modalMount 0.2s'
             },
             keyframes: {
                 indeterminate: {
                     '0%': { transform: 'translateX(0) scaleX(0)' },
                     '40%': { transform: 'translateX(0) scaleX(0.4)' },
                     '100%': { transform: 'translateX(100%) scaleX(0.5)' }
+                },
+                modalMount: {
+                    '0%': {
+                        opacity: 0,
+                        transform: 'translateY(50px) '
+                    },
+                    '100%': {
+                        opacity: 1,
+                        transform: 'translateY(0) '
+                    }
                 }
             },
             ringWidth: {
                 'theme-radio-border-width': '5px'
+            },
+            zIndex: {
+                'modal-z': '5000',
+                'drawer-z': '5000'
             }
         },
         colors: {
