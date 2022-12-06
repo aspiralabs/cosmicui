@@ -17,13 +17,15 @@ export interface ToastOptions {
 // =============================================================================
 const Toast = ({ toasts }: { toasts: ToastObject[] }) => {
     return (
-        <div
-            className="-translate-x-1/2 absolute bottom-0 flex flex-col gap-4 left-1/2 overflow-hidden p-4 transform w-full z-50"
-            style={{ maxWidth: 500 }}
-        >
-            {toasts.map(toast => (
-                <ToastMessage key={toast.id} toast={toast} />
-            ))}
+        <div className="fixed top-0 left-0 h-screen w-screen pointer-events-none">
+            <div
+                className="-translate-x-1/2 absolute bottom-0 flex flex-col gap-4 left-1/2 overflow-hidden p-4 transform w-full z-50"
+                style={{ maxWidth: 500 }}
+            >
+                {toasts.map(toast => (
+                    <ToastMessage key={toast.id} toast={toast} />
+                ))}
+            </div>
         </div>
     );
 };
