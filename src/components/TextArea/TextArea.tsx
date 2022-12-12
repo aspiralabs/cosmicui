@@ -1,7 +1,6 @@
-import React, { InputHTMLAttributes, MutableRefObject, Ref, useEffect, useRef, useState } from 'react';
-import { forwardRef } from 'react';
+import React, { forwardRef, InputHTMLAttributes, useEffect, useRef, useState } from 'react';
 import { assignRefs } from '../../utility/general';
-import { InputLabel, InputDescription, InputError } from '../Common/InputPieces';
+import { InputDescription, InputError, InputLabel } from '../Common/InputPieces';
 import { useFormContext } from '../Form/Form';
 
 // =============================================================================
@@ -63,6 +62,7 @@ const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>((props, passedRe
                 onChange={textAreaChange}
                 className={`textarea ${props.className}`}
                 value={value}
+                role="textbox"
             />
 
             {/* Can Receive Error from prop or from form context */}

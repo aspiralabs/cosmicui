@@ -23,6 +23,8 @@ const Modal = ({ modals }: { modals: ModalObject[] }) => {
     const backdropClosedStyles = 'bg-opacity-0 pointer-events-none';
     const backdropOpenStyles = 'bg-opacity-25 pointer-events-auto';
 
+    console.log('modal length', modals.length);
+
     return (
         <div className={`${backdropBaseClass} ${modals.length > 0 ? backdropOpenStyles : backdropClosedStyles}`}>
             {modals.map((modal: ModalObject, index: number) => (

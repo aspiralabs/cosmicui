@@ -16,7 +16,21 @@ module.exports = {
         'pointer-events-auto', // Used for Drawer and Modal Backdrops
         'bg-black', // Used for Modal Backdrops
         'bg-white',
-        'bg-opacity-25' // Used For Modal Backdrop
+        'bg-opacity-25', // Used For Modal Backdrop
+        'bg-opacity-0',
+        'translate-x-full',
+        'translate-x-0',
+        '-translate-x-full',
+        '-translate-x-1/2',
+        'left-1/2',
+        'duration-300',
+        'ease-in-out',
+        'bottom-0',
+        'tooltip',
+        'tooltip-top',
+        'tooltip-bottom',
+        'tooltip-left',
+        'tooltip-right'
     ],
     theme: {
         extend: {
@@ -71,7 +85,8 @@ module.exports = {
             heading: { DEFAULT: '#172B4D', pair: '', hover: '', disabled: '' },
             body: { DEFAULT: '#6B778C', pair: '', hover: '', disabled: '' },
             white: { DEFAULT: '#ffffff', pair: '', hover: '', disabled: '' },
-            black: { DEFAULT: '#000000', pair: '', hover: '', disabled: '' }
+            black: { DEFAULT: '#000000', pair: '', hover: '', disabled: '' },
+            tooltip: { DEFAULT: '#3d4451', pair: '', hover: '', disabled: '' }
         }
     }
 };

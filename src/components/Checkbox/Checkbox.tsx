@@ -57,6 +57,7 @@ const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>((props: CheckboxPro
                     checked={isChecked}
                     onChange={toggleChecked}
                     disabled={disabled}
+                    role="checkbox"
                 />
             </div>
             <span className="text-body text-theme-input-label cursor-default" onClick={toggleChecked}>

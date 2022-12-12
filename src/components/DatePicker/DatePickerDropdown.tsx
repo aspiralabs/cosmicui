@@ -2,10 +2,10 @@
 // DROPDOWN
 // =============================================================================
 
-import React, { useState, useEffect } from 'react';
-import { useDatePicker } from './DatePicker';
-import dayjs from 'dayjs';
+import React, { useEffect, useRef, useState } from 'react';
+import { onClickOutside } from '../../hooks';
 import Input from '../Input';
+import { useDatePicker } from './DatePicker';
 
 interface DayObject {
     day: number;
@@ -93,10 +93,24 @@ const ChevronDown = () => {
 // MAIN
 // =============================================================================
 export const DatePickerDropdown = () => {
-    const { currentDropdownView, setCurrentDropdownView, internalDate, handleSelectDate, datetime } = useDatePicker();
+    const {
+        currentDropdownView,
+        setCurrentDropdownView,
+        internalDate,
+        handleSelectDate,
+        datetime,
+        setDropdownOpen,
+        stepHour,
+        stepMinute
+    } = useDatePicker();
 
     const [yearPickerIndex, setYearPickerIndex] = useState(0);
     const [currentAllyDateSelected, setCurrentAllyDateSelected] = useState(0);
+
+    // Used to determine if a date has been selected during datetime
+    // to update the date picker without closing the datepicker
+    const [hasSelectedDate, setHasSelectedDate] = useState(false);
+    const [hasSelectedTime, setHasSelectedTime] = useState(false);
 
     // The current
     const [currentViewDate, setCurrentViewDate] = useState<DatePickerViewObject>({
@@ -108,6 +122,29 @@ export const DatePickerDropdown = () => {
     });
 
     const allDateRefs: { [key: number]: any } = {};
+    const datepickerDropdownRef = useRef<any>(null);
+
+    onClickOutside(datepickerDropdownRef, () => {
+        console.log('test', currentViewDate);
+
+        if (!hasSelectedDate && !hasSelectedTime) setDropdownOpen(false);
+
+        if (datetime) {
+            if (!hasSelectedDate && hasSelectedTime) {
+                const day = new Date().getDate();
+                const selectedDate = new Date(
+                    currentViewDate.year,
+                    currentViewDate.month,
+                    day,
+                    currentViewDate.hour,
+                    currentViewDate.minute
+                );
+                handleSelectDate(selectedDate, true);
+            } else {
+                internalDate && handleSelectDate(internalDate, true);
+            }
+        }
+    });
 
     // =========================================================================
     // ACTIONS
@@ -124,12 +161,15 @@ export const DatePickerDropdown = () => {
             };
         } else {
             const today = new Date();
+            const hour = Math.floor(today.getHours() / stepHour) * stepHour;
+            const minute = Math.floor(today.getMinutes() / stepMinute) * stepMinute;
+
             payload = {
                 daysInMonth: [],
                 year: today.getFullYear(),
                 month: today.getMonth(),
-                hour: today.getHours(),
-                minute: today.getMinutes()
+                hour,
+                minute
             };
         }
 
@@ -177,6 +217,19 @@ export const DatePickerDropdown = () => {
         setCurrentViewDate(finalPayload);
     };
 
+    const regenerateDaysOfCurrentMonth = () => {
+        if (!internalDate) return;
+        const payload = {
+            daysInMonth: [],
+            year: internalDate.getFullYear(),
+            month: internalDate.getMonth(),
+            hour: internalDate.getHours(),
+            minute: internalDate.getMinutes()
+        };
+        const finalPayload = { ...payload, daysInMonth: getDaysOfCurrentMonth(payload) };
+        setCurrentViewDate(finalPayload);
+    };
+
     // =========================================================================
     // EVENT HANDLERS
     // =========================================================================
@@ -212,6 +265,7 @@ export const DatePickerDropdown = () => {
                 currentViewDate.minute
             );
             handleSelectDate(selectedDate);
+            setHasSelectedDate(true);
         } else {
             const selectedDate = new Date(currentViewDate.year, currentViewDate.month, day);
             handleSelectDate(selectedDate);
@@ -257,10 +311,12 @@ export const DatePickerDropdown = () => {
 
     const updateHour = (hour: number) => {
         updateCalendarView({ ...currentViewDate, hour });
+        setHasSelectedTime(true);
     };
 
     const updateMinute = (minute: number) => {
         updateCalendarView({ ...currentViewDate, minute });
+        setHasSelectedTime(true);
     };
 
     // =========================================================================
@@ -318,12 +374,15 @@ export const DatePickerDropdown = () => {
     // EFFECTS
     // =========================================================================
     useEffect(() => initiateDropdown(), []);
+    useEffect(() => {
+        hasSelectedDate && regenerateDaysOfCurrentMonth();
+    }, [hasSelectedDate]);
 
     // =========================================================================
     // RENDER
     // =========================================================================
     return (
-        <div className="bg-white shadow p-4 absolute top-full left-0 w-72 z-50">
+        <div className="bg-white shadow p-4 absolute top-full left-0 w-72 z-50" ref={datepickerDropdownRef}>
             {currentDropdownView === 'picker' && (
                 <div className="h-full w-full">
                     {/* TOP PART OF CALENDAR PICKER */}
@@ -401,6 +460,7 @@ export const DatePickerDropdown = () => {
                                     <NumberPicker
                                         min={0}
                                         max={24}
+                                        step={stepHour}
                                         number={currentViewDate.hour}
                                         setNumber={value => updateHour(value)}
                                     />
@@ -408,6 +468,7 @@ export const DatePickerDropdown = () => {
                                     <NumberPicker
                                         min={0}
                                         max={59}
+                                        step={stepMinute}
                                         number={currentViewDate.minute}
                                         setNumber={value => updateMinute(value)}
                                     />
@@ -525,25 +586,31 @@ const NumberPicker = ({
     min,
     max,
     number,
-    setNumber
+    setNumber,
+    step
 }: {
     min: number;
     max: number;
     number: number;
     setNumber: (value: number) => void;
+    step: number;
 }) => {
     const handleInputChange = (e: any) => {
         setNumber(e.target.value);
     };
 
     const handleTimeUp = () => {
-        const newValue = number + 1;
-        setNumber(newValue > max ? min : newValue);
+        const steppedMin = Math.floor(min / step) * step;
+
+        const newValue = number + step;
+        setNumber(newValue > max ? steppedMin : newValue);
     };
 
     const handleTimeDown = () => {
-        const newValue = number - 1;
-        setNumber(newValue < min ? max : newValue);
+        const steppedMax = Math.floor(max / step) * step;
+
+        const newValue = number - step;
+        setNumber(newValue < min ? steppedMax : newValue);
     };
 
     const pad = (number: number) => {
@@ -559,12 +626,6 @@ const NumberPicker = ({
             <div onClick={handleTimeUp} className={chevronContainer}>
                 <ChevronUp />
             </div>
-            {/* <input
-                className="border-2 border-gray dark:border-gray-dark p-2 rounded w-12 text-center text-body dark:text-body-dark"
-                value={pad(number)}
-                onChange={handleInputChange}
-                style={{ background: 'rgba(0,0,0,0)' }}
-            /> */}
 
             <div className="w-12">
                 <Input value={pad(number)} onChange={handleInputChange} />

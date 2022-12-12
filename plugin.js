@@ -7,6 +7,7 @@ const generateButtonClasses = require('./pluginFiles/buttons');
 const generateBadgeClasses = require('./pluginFiles/badge');
 const generateInputClasses = require('./pluginFiles/input');
 const generateProgressClasses = require('./pluginFiles/progress');
+const generateTooltipClasses = require('./pluginFiles/tooltip');
 
 // =============================================================================
 // MAIN PLUGIN
@@ -26,6 +27,7 @@ const cosmicPlugin = plugin(function ({ addUtilities, addComponents, e, prefix, 
     addComponents(generateBadgeClasses(theme, variants));
     addComponents(generateInputClasses(theme, variants));
     addComponents(generateProgressClasses(theme, variants));
+    addComponents(generateTooltipClasses(theme, variants));
 }, defaultConfig);
 
 module.exports = cosmicPlugin;

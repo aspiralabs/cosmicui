@@ -1,5 +1,5 @@
 import React, { forwardRef, InputHTMLAttributes } from 'react';
-import { InputLabel, InputDescription, InputError } from '../Common/InputPieces';
+import { InputDescription, InputError, InputLabel } from '../Common/InputPieces';
 import { useFormContext } from '../Form/Form';
 
 // =============================================================================
@@ -57,6 +57,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>((props: InputProps, ref) 
                 onChange={handleChange}
                 onBlur={handleBlur}
                 className={`input ${inputClass}`}
+                role="textbox"
             />
 
             {/* Can Receive Error from prop or from form context */}

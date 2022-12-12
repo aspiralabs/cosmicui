@@ -1,7 +1,17 @@
-import React from 'react'
+import React from 'react';
 
-const Tooltip = ({}) => {
-    return <div>Hello World</div>;
+interface ToolTipPros {
+    children: any;
+    position?: 'bottom' | 'top' | 'left' | 'right';
+    content?: string;
 }
 
-export default Tooltip
+const Tooltip = ({ children, position = 'bottom', content = 'tooltip' }: ToolTipPros) => {
+    return (
+        <div className={`tooltip tooltip-${position}`} data-tip={content}>
+            {children}
+        </div>
+    );
+};
+
+export default Tooltip;

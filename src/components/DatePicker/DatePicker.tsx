@@ -1,10 +1,9 @@
-import React, { forwardRef, InputHTMLAttributes } from 'react';
-import { useEffect, useRef, useState } from 'react';
-import { InputLabel, InputDescription, InputError } from '../Common/InputPieces';
-import { useFormContext } from '../Form/Form';
 import dayjs from 'dayjs';
-import { DatePickerDropdown } from './DatePickerDropdown';
+import React, { forwardRef, InputHTMLAttributes, useEffect, useRef, useState } from 'react';
 import { assignRefs } from '../../utility/general';
+import { InputDescription, InputError, InputLabel } from '../Common/InputPieces';
+import { useFormContext } from '../Form/Form';
+import { DatePickerDropdown } from './DatePickerDropdown';
 
 // =============================================================================
 // CLASSES
@@ -44,15 +43,21 @@ export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
     displayFormat?: string;
     datetime?: boolean;
     native?: boolean;
+    isoFormat?: boolean;
+    stepMinute?: number;
+    stepHour?: number;
 }
 
 interface DatePickerContextValues {
     id: string;
     internalDate: Date | undefined;
     currentDropdownView: string;
-    handleSelectDate: (date: Date) => void;
+    handleSelectDate: (date: Date, close?: boolean) => void;
     setCurrentDropdownView: any;
     datetime: boolean;
+    setDropdownOpen: React.Dispatch<React.SetStateAction<boolean>>;
+    stepMinute: number;
+    stepHour: number;
 }
 
 // =============================================================================
@@ -93,12 +98,16 @@ const DatePicker = forwardRef<HTMLInputElement, InputProps>((props: InputProps, 
         displayFormat = props.datetime ? 'MM/DD/YYYY h:mm A' : 'MM/DD/YYYY',
         datetime = false,
         native = false,
+        isoFormat = true,
+        stepMinute = 1,
+        stepHour = 1,
         ...passThrough
     } = props;
     const uniqueInputId = '1';
 
     // HELPER
     const determineInitialDate = () => {
+        if (props.defaultValue) return dayjs(props.defaultValue as string).toDate();
         if (!props.value) return undefined;
         if (props.value === '') return undefined;
         return new Date(props.value as string | number);
@@ -137,11 +146,18 @@ const DatePicker = forwardRef<HTMLInputElement, InputProps>((props: InputProps, 
         setDropdownOpen(!dropdownOpen);
     };
 
-    const handleSelectDate = (date: Date) => {
-        setDropdownOpen(false);
-        setInternalDate(date);
-        if (allyRef && allyRef.current) {
-            allyRef.current.focus();
+    const handleSelectDate = (date: Date, close?: boolean) => {
+        if (datetime) {
+            setInternalDate(date);
+            if (close) setDropdownOpen(false);
+        }
+
+        if (!datetime) {
+            setDropdownOpen(false);
+            setInternalDate(date);
+            if (allyRef && allyRef.current) {
+                allyRef.current.focus();
+            }
         }
     };
 
@@ -203,7 +219,10 @@ const DatePicker = forwardRef<HTMLInputElement, InputProps>((props: InputProps, 
         currentDropdownView,
         handleSelectDate,
         setCurrentDropdownView,
-        datetime
+        datetime,
+        setDropdownOpen,
+        stepMinute,
+        stepHour
     };
 
     // =========================================================================
@@ -212,8 +231,12 @@ const DatePicker = forwardRef<HTMLInputElement, InputProps>((props: InputProps, 
     useEffect(() => {
         if (internalRef && internalRef.current) {
             // Calculate Correct Format
+
             const format = datetime ? 'YYYY-MM-DDThh:mm' : 'YYYY-MM-DD';
-            const inputValue = internalDate ? dayjs(internalDate).format(format) : undefined;
+            let inputValue = undefined;
+            if (isoFormat) inputValue = internalDate ? dayjs(internalDate).toISOString() : undefined;
+            else inputValue = internalDate ? dayjs(internalDate).format(format) : undefined;
+
             const input = internalRef.current;
 
             // Update Value of Semantic Input
@@ -252,7 +275,6 @@ const DatePicker = forwardRef<HTMLInputElement, InputProps>((props: InputProps, 
                         disabled={disabled || disabledForm}
                         onChange={handleChange}
                         onBlur={handleBlur}
-                        type={datetime ? 'datetime-local' : 'date'}
                         className="sr-only"
                         tabIndex={-1}
                     />

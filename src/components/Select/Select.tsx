@@ -1,5 +1,5 @@
-import React, { forwardRef, HTMLAttributes, InputHTMLAttributes, useRef, useState } from 'react';
-import { InputLabel, InputDescription, InputError } from '../Common/InputPieces';
+import React, { forwardRef, InputHTMLAttributes, useEffect, useRef, useState } from 'react';
+import { InputDescription, InputError, InputLabel } from '../Common/InputPieces';
 import { useFormContext } from '../Form/Form';
 
 // =============================================================================
@@ -220,8 +220,6 @@ const Select = forwardRef<HTMLSelectElement, InputProps>((props: InputProps, ref
     };
 
     const generateDisplayedValue = () => {
-        console.log(searchable, isSearching, internalValue);
-
         if (searchable && !isSearching) {
             if (internalValue) return <span className="text-body">{internalValue.label}</span>;
             if (!internalValue) return <span className="text-body text-opacity-50">{props.placeholder}</span>;
@@ -244,6 +242,17 @@ const Select = forwardRef<HTMLSelectElement, InputProps>((props: InputProps, ref
         activeIndex,
         uniqueInputId
     };
+
+    // =========================================================================
+    // INIT
+    // =========================================================================
+    useEffect(() => {
+        // If there is a default value - set it.
+        if (props.defaultValue) {
+            const value = options.find(option => option.value === props.defaultValue);
+            value && setInternalValue(value);
+        }
+    }, []);
 
     // =========================================================================
     // RENDER
