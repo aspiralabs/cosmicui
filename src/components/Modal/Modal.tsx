@@ -4,7 +4,7 @@ import { useCosmic } from '../CosmicProvider';
 // =============================================================================
 // INTERFACE
 // =============================================================================
-export interface CosmicModalProps {
+export interface BaseCosmicModalProps {
     id?: string;
     closeIcon?: boolean;
 }

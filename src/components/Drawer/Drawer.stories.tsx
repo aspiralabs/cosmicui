@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import Button from '../Button';
+import DatePicker from '../DatePicker';
 import Form from '../Form';
 import Input from '../Input';
+import Select from '../Select';
 import Drawer from './Drawer';
 
 export default {
@@ -16,6 +18,8 @@ export const BasicDrawer = () => {
         console.log(values);
     };
 
+    const options = [{ label: 'Hi', value: 'hi' }];
+
     return (
         <div className="flex gap-4">
             <Button onClick={() => setDrawerOpenTwo(true)}>Open Right</Button>
@@ -25,6 +29,8 @@ export const BasicDrawer = () => {
                     <Form onSubmit={handleSubmit}>
                         <Input name="firstName" label="First Name" />
                         <Input name="lastName" label="Last Name" />
+                        <Select name="test" label="test" options={options} />
+                        <DatePicker />
                     </Form>
                 </section>
             </Drawer>

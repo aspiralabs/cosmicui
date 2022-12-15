@@ -1,1 +1,1 @@
-export { default } from './Modal';
+export { BaseCosmicModalProps, default } from './Modal';
