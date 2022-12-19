@@ -21,7 +21,7 @@ export interface TextAreaProps extends InputHTMLAttributes<HTMLTextAreaElement> 
 // =============================================================================
 const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>((props, passedRef) => {
     const { formErrors, disabledForm, inputValidateCallback, validationStrategy } = useFormContext();
-    const { label, description, required, error, ...passThrough } = props;
+    const { label, description, required, error, defaultValue, minHeight = 100, ...passThrough } = props;
     const [value, setValue] = useState(props.value || '');
     const textareaRef = useRef<HTMLTextAreaElement | null>(null);
     const uniqueInputId = '1';
@@ -42,8 +42,8 @@ const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>((props, passedRe
             textareaRef.current.style.height = '0px';
             const scrollHeight = textareaRef.current.scrollHeight;
 
-            if (props.minHeight && scrollHeight < props.minHeight) {
-                textareaRef.current.style.height = props.minHeight + 'px';
+            if (minHeight && scrollHeight < minHeight) {
+                textareaRef.current.style.height = minHeight + 'px';
             } else if (props.maxHeight && scrollHeight > props.maxHeight) {
                 textareaRef.current.style.height = props.maxHeight + 'px';
             } else {
@@ -51,6 +51,10 @@ const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>((props, passedRe
             }
         }
     }, [value]);
+
+    useEffect(() => {
+        if (defaultValue) setValue(defaultValue);
+    }, []);
 
     return (
         <div className="flex flex-col text-sm w-full">

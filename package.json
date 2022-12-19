@@ -3,15 +3,17 @@
     "publishConfig": {
         "registry": "https://npm.pkg.github.com/aspiralabs"
     },
-    "version": "0.0.26",
+    "version": "0.0.27",
     "description": "React Component Library based on TailwindCSS",
     "scripts": {
-        "build": "rm -rf dist && rollup -c",
-        "test": "jest",
-        "test-detailed": "jest --verbose",
-        "dev": "start-storybook -p 6006",
+        "test:all": "jest",
+        "test:detailed": "jest --verbose",
         "build-storybook": "build-storybook",
-        "push": "npm publish"
+        "build:full-package": "rm -rf dist && rollup -c",
+        "build:tailwind": "postcss src/styles/tailwind.css -o src/styles/index.css",
+        "start:storybook": "start-storybook -p 6006",
+        "start:tailwind": "postcss --watch src/styles/global.css -o src/styles/output.css",
+        "development": "concurrently --raw \"yarn start:tailwind\" \"yarn start:storybook\""
     },
     "author": "Aspira Labs",
     "sideEffects": false,
@@ -44,6 +46,7 @@
         "@types/react-transition-group": "^4.4.5",
         "babel-jest": "^27.3.1",
         "babel-loader": "^8.2.3",
+        "concurrently": "^7.6.0",
         "css-loader": "^6.5.1",
         "html-webpack-plugin": "^5.5.0",
         "identity-obj-proxy": "^3.0.0",

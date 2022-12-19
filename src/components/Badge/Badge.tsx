@@ -14,19 +14,6 @@ const Badge = (props: BadgeProps) => {
 
     const baseClass = `badge-${variant} ${closeable ? 'pl-3 pr-2' : 'px-3'}`;
 
-    const closeButtonClass = `
-        flex-shrink-0 
-        h-4 
-        w-4 
-        inline-flex 
-        items-center 
-        justify-center 
-        rounded-full 
-        text-${variant}-pair
-        hover:bg-${variant}-hover
-        focus:outline-none 
-    `;
-
     const handleCloseClick = () => {
         props.onClose && props.onClose();
     };
@@ -35,7 +22,7 @@ const Badge = (props: BadgeProps) => {
         <span className={`${baseClass} ${props.className}`}>
             {props.children}
             {closeable && (
-                <button type="button" className={closeButtonClass} onClick={handleCloseClick}>
+                <button type="button" className={`badge-${variant}-close-btn`} onClick={handleCloseClick}>
                     <span className="sr-only">Remove badge</span>
                     <svg
                         className="h-4 w-4"

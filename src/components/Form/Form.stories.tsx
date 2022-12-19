@@ -5,8 +5,13 @@ import Input from '../Input';
 import Form from './Form';
 
 import * as yup from 'yup';
+import Checkbox from '../Checkbox';
 import DatePicker from '../DatePicker';
+import Radio from '../Radio';
+import Range from '../Range';
 import Select from '../Select';
+import Switch from '../Switch';
+import TextArea from '../TextArea';
 
 export default {
     title: 'Form'
@@ -49,17 +54,28 @@ export const BasicForm = () => {
                 className="flex flex-col gap-6 w-full"
                 defaultFormValues={{
                     firstName: 'David',
-                    lastName: 'Ludemann',
                     selectField: 'hiii',
-                    birthDay: '2022-12-23T06:00:00.000Z'
+                    birthDay: '2022-12-23T06:00:00.000Z',
+                    checkboxValue: false,
+                    switchValue: false,
+                    textArea: 'Hello World'
                 }}
             >
                 <Input label="First Name" name="firstName" />
                 <Select options={selectFieldValues} label="Select" name="selectField" />
-                <DatePicker label="Birth Day" name="birthDay" datetime />
-                <DatePicker label="Birth Day" name="birthDayTwo" datetime stepMinute={15} />
+                <DatePicker label="Birth Day" name="birthDay" datetime stepMinute={15} />
                 <Input label="Last Name" name="lastName" />
+                <Checkbox label="Checkbox" name="checkboxValue" />
+                <Switch label="Switch" name="switchValue" />
+                <TextArea label="Text Area" name="textArea" />
 
+                <Range name="rangeValue" step={10} />
+
+                <div className="flex flex-col gap-2">
+                    <Radio label="Option One" name="radioOptions" data-option-value="one" />
+                    <Radio label="Option Two" name="radioOptions" data-option-value="two" />
+                    <Radio label="Option Three" name="radioOptions" data-option-value="three" />
+                </div>
                 <Button variant="primary" className="w-full">
                     Login
                 </Button>

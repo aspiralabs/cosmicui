@@ -1,9 +1,9 @@
-import React, { forwardRef, InputHTMLAttributes, useRef, useState } from 'react';
+import React, { forwardRef, InputHTMLAttributes, useState } from 'react';
 
 interface RangeProps extends InputHTMLAttributes<HTMLInputElement> {}
 
 const Range = forwardRef<HTMLInputElement, RangeProps>((props: RangeProps, ref) => {
-    const { ...passThrough } = props;
+    const { defaultValue, ...passThrough } = props;
     const MAX = 100;
 
     const [internalValue, setInternalValue] = useState(25);
@@ -25,6 +25,7 @@ const Range = forwardRef<HTMLInputElement, RangeProps>((props: RangeProps, ref) 
             onChange={handleValueChange}
             style={getBackgroundSize()}
             value={internalValue}
+            {...passThrough}
         />
     );
 });

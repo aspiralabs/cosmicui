@@ -26,8 +26,15 @@ const Radio = forwardRef<HTMLInputElement, SwitchProps>((props: SwitchProps, ref
     // Props
     const { label, required, value, checked, onChange, disabled, variant = 'primary', ...passThrough } = props;
 
+    const calculateInitialValue = () => {
+        if (checked) return true;
+        if (value) return true;
+        if (props.defaultChecked === true) return true;
+        return false;
+    };
+
     // Check State
-    const defaultChecked = checked || value ? true : false;
+    const defaultChecked = calculateInitialValue();
     const [isChecked, setIsChecked] = useState(defaultChecked);
 
     // Actions

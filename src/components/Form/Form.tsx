@@ -66,9 +66,27 @@ const applyRecursiveProps = (children: React.ReactNode, defaultFormValues: { [ke
         // Recursively general children if there are children
         const recursiveGrandchildren: any = applyRecursiveProps(child.props.children, defaultFormValues);
 
+        // This is a check for Cosmic Radio Buttons
+        if (defaultFormValues[child.props['data-option-value']]) {
+            // TODO: Ideally this would detect if the input element can have a
+            // 'defaultValue' or 'defaultChecked' prop. Technically, passing both
+            // works for now.
+            return React.cloneElement(child, {
+                ...child.props,
+                defaultChecked: defaultFormValues[child.props['data-option-value']]
+            });
+        }
+
         // If a Name Value Exists, we've usually hit an element with no children (such as input)
         if (defaultFormValues[child.props.name]) {
-            return React.cloneElement(child, { ...child.props, defaultValue: defaultFormValues[child.props.name] });
+            // TODO: Ideally this would detect if the input element can have a
+            // 'defaultValue' or 'defaultChecked' prop. Technically, passing both
+            // works for now.
+            return React.cloneElement(child, {
+                ...child.props,
+                defaultValue: defaultFormValues[child.props.name],
+                defaultChecked: defaultFormValues[child.props.name]
+            });
         }
         // If a name value doesn't exist we may or may not have children.
         else {
@@ -157,7 +175,6 @@ const Form = forwardRef<HTMLFormElement, FormProps>((props: FormProps, ref) => {
             'datetime-local',
             'color',
             'month',
-            'number',
             'tel',
             'time',
             'url',
@@ -166,9 +183,27 @@ const Form = forwardRef<HTMLFormElement, FormProps>((props: FormProps, ref) => {
 
         // Find All HTML Form Elements
         Array.prototype.forEach.call(e.currentTarget.elements, element => {
+            if (element.type === 'range' || element.type === 'number') {
+                payload[element.name] = Number(element.value);
+            }
+
+            if (element.type === 'radio') {
+                const key = element.getAttribute('data-option-value') || undefined;
+                if (key) {
+                    payload[element.name] = { ...payload[element.name], [key]: element.checked };
+                }
+            }
+
             // Get all elements with 'element.value'
             if (inputTypes.includes(element.type) && element.name) {
-                payload[element.name] = element.value;
+                let value = element.value;
+
+                // HTML inputs return undefined as a string, here we just convert it to
+                // javascript undefiend
+                if (element.value == 'undefined') value = undefined;
+                if (element.value == 'null') value = null;
+
+                payload[element.name] = value;
             }
 
             // Checkboxes dont have 'element.value'
@@ -186,8 +221,6 @@ const Form = forwardRef<HTMLFormElement, FormProps>((props: FormProps, ref) => {
                 payload[element.name] = valuesArray;
             }
         });
-
-        console.log('payload', payload);
 
         // Form Validation
         if (validation) {

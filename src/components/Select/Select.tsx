@@ -275,7 +275,7 @@ const Select = forwardRef<HTMLSelectElement, InputProps>((props: InputProps, ref
                     multiple={false}
                 >
                     {options.map(option => (
-                        <option value={option.value} />
+                        <option value={option.value} key={option.value} />
                     ))}
                 </select>
 
@@ -292,6 +292,7 @@ const Select = forwardRef<HTMLSelectElement, InputProps>((props: InputProps, ref
                     onKeyDown={handleButtonKeyPress}
                     ref={buttonRef}
                     tabIndex={0}
+                    type="button"
                 >
                     {/* CONTENT CONTAINER */}
                     <div className="flex-1 flex items-center relative">

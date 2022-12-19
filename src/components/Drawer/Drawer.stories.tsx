@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import Button from '../Button';
-import DatePicker from '../DatePicker';
 import Form from '../Form';
 import Input from '../Input';
 import Select from '../Select';
@@ -15,7 +14,7 @@ export const BasicDrawer = () => {
     const [drawerOpenTwo, setDrawerOpenTwo] = useState(false);
 
     const handleSubmit = (values: any) => {
-        console.log(values);
+        console.log('form submitted', values);
     };
 
     const options = [{ label: 'Hi', value: 'hi' }];
@@ -30,7 +29,6 @@ export const BasicDrawer = () => {
                         <Input name="firstName" label="First Name" />
                         <Input name="lastName" label="Last Name" />
                         <Select name="test" label="test" options={options} />
-                        <DatePicker />
                     </Form>
                 </section>
             </Drawer>
